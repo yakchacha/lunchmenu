@@ -11,17 +11,53 @@ import {
   Wifi,
   WifiOff,
 } from "lucide-react";
+import { collection, addDoc, getFirestore } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
 
-// Firebase 설정 (실제 사용시 환경변수로 관리 필요)
+// Firebase 설정
 const firebaseConfig = {
   apiKey: "AIzaSyD8mqTmsrPpZ78TnlG2futeve5hEc3aEFI",
   authDomain: "lunchroulette-4758c.firebaseapp.com",
-  databaseURL: "https://lunchroulette-4758c-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "lunchroulette-4758c",
   storageBucket: "lunchroulette-4758c.firebasestorage.app",
   messagingSenderId: "312740196547",
-  appId: "1:312740196547:web:c05ecc89cfeaae16453276"
+  appId: "1:312740196547:web:c05ecc89cfeaae16453276",
 };
+
+// Firebase 앱 초기화
+const app = initializeApp(firebaseConfig);
+
+// Firestore 인스턴스 생성
+const db = getFirestore(app);
+
+export default function App() {
+  const [text, setText] = useState("");
+
+  const saveData = async () => {
+    if (!text) return alert("메시지를 입력하세요");
+    try {
+      await addDoc(collection(db, "messages"), {
+        text,
+        createdAt: new Date(),
+      });
+      alert("저장 성공!");
+      setText("");
+    } catch (e) {
+      console.error("저장 실패:", e);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="메시지 입력"
+      />
+      <button onClick={saveData}>저장</button>
+    </div>
+  );
+}
 
 const LunchRoulette = () => {
   const [restaurants, setRestaurants] = useState([]);
