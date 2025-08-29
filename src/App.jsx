@@ -204,7 +204,7 @@ const LunchRoulette = () => {
                 }`}
               >
                 {tab === "roulette" && "룰렛"}
-                {tab === "restaurants" && "🍽맛집 목록"}
+                {tab === "restaurants" && "맛집 목록"}
                 {tab === "rankings" && "인기 순위"}
               </button>
             ))}
