@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   MapPin,
   Star,
@@ -6,12 +6,10 @@ import {
   MessageSquare,
   Plus,
   RotateCcw,
-  Trophy,
-  Clock,
   Coffee,
 } from "lucide-react";
 
-const LunchRoulette = () => {
+const App = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [coffeeMembers, setCoffeeMembers] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -34,20 +32,12 @@ const LunchRoulette = () => {
     comment: "",
   });
 
-  const categories = [
-    "한식",
-    "양식",
-    "일식",
-    "중식",
-    "아시안",
-    "패스트푸드",
-    "기타",
-  ];
+  const categories = ["한식", "양식", "일식", "중식", "아시안", "패스트푸드", "기타"];
 
   const spinRoulette = () => {
+    if (restaurants.length === 0) return;
     setIsSpinning(true);
     setSelectedRestaurant(null);
-
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * restaurants.length);
       setSelectedRestaurant(restaurants[randomIndex]);
@@ -60,13 +50,13 @@ const LunchRoulette = () => {
       alert("최소 2명 이상의 멤버가 필요합니다!");
       return;
     }
-    
     setIsCoffeeSpinning(true);
     setSelectedCoffeeMembers([]);
-
     setTimeout(() => {
       const shuffled = [...coffeeMembers].sort(() => Math.random() - 0.5);
-      const numSelected = Math.floor(Math.random() * Math.min(3, coffeeMembers.length - 1)) + 1;
+      const numSelected = Math.floor(
+        Math.random() * Math.min(3, coffeeMembers.length - 1)
+      ) + 1;
       setSelectedCoffeeMembers(shuffled.slice(0, numSelected));
       setIsCoffeeSpinning(false);
     }, 2000);
@@ -96,7 +86,7 @@ const LunchRoulette = () => {
   };
 
   const removeMember = (memberToRemove) => {
-    setCoffeeMembers(coffeeMembers.filter(member => member !== memberToRemove));
+    setCoffeeMembers(coffeeMembers.filter((m) => m !== memberToRemove));
   };
 
   const addReview = (restaurantId) => {
@@ -113,7 +103,7 @@ const LunchRoulette = () => {
               },
             ];
             const avgRating =
-              updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
+              updatedReviews.reduce((sum, r) => sum + r.rating, 0) /
               updatedReviews.length;
             return {
               ...restaurant,
@@ -130,37 +120,25 @@ const LunchRoulette = () => {
 
   const voteForRestaurant = (restaurantId) => {
     setRestaurants((prev) =>
-      prev.map((restaurant) =>
-        restaurant.id === restaurantId
-          ? { ...restaurant, votes: restaurant.votes + 1 }
-          : restaurant
+      prev.map((r) =>
+        r.id === restaurantId ? { ...r, votes: r.votes + 1 } : r
       )
     );
   };
 
   const deleteRestaurant = (restaurantId) => {
-    setRestaurants((prev) =>
-      prev.filter((restaurant) => restaurant.id !== restaurantId)
-    );
+    setRestaurants((prev) => prev.filter((r) => r.id !== restaurantId));
   };
 
   const clearAllData = () => {
-    if (
-      window.confirm(
-        "정말로 모든 맛집 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
-      )
-    ) {
+    if (window.confirm("모든 맛집 데이터를 삭제하시겠습니까?")) {
       setRestaurants([]);
       setSelectedRestaurant(null);
     }
   };
 
   const clearAllMembers = () => {
-    if (
-      window.confirm(
-        "정말로 모든 멤버를 삭제하시겠습니까?"
-      )
-    ) {
+    if (window.confirm("모든 멤버를 삭제하시겠습니까?")) {
       setCoffeeMembers([]);
       setSelectedCoffeeMembers([]);
     }
@@ -177,7 +155,6 @@ const LunchRoulette = () => {
           const angle = (360 / restaurants.length) * index;
           const nextAngle = (360 / restaurants.length) * (index + 1);
           const midAngle = (angle + nextAngle) / 2;
-
           const colors = [
             "bg-red-400",
             "bg-blue-400",
@@ -188,7 +165,6 @@ const LunchRoulette = () => {
             "bg-indigo-400",
             "bg-orange-400",
           ];
-
           return (
             <div
               key={restaurant.id}
@@ -235,7 +211,6 @@ const LunchRoulette = () => {
           const angle = (360 / coffeeMembers.length) * index;
           const nextAngle = (360 / coffeeMembers.length) * (index + 1);
           const midAngle = (angle + nextAngle) / 2;
-
           const colors = [
             "bg-orange-400",
             "bg-yellow-400",
@@ -246,7 +221,6 @@ const LunchRoulette = () => {
             "bg-purple-400",
             "bg-indigo-400",
           ];
-
           return (
             <div
               key={member}
@@ -270,7 +244,7 @@ const LunchRoulette = () => {
                   transformOrigin: "center",
                 }}
               >
-                {member.length > 8 ? member.substring(0, 6) + '..' : member}
+                {member.length > 8 ? member.substring(0, 6) + ".." : member}
               </div>
             </div>
           );
@@ -287,20 +261,18 @@ const LunchRoulette = () => {
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
           <div className="mb-4">
-            <img 
-              src="https://i.imgur.com/EPQTCHV.png" 
-              alt="OGQ 로고" 
+            <img
+              src="https://i.imgur.com/EPQTCHV.png"
+              alt="OGQ 로고"
               className="w-24 h-24 mx-auto rounded-full shadow-lg object-cover"
             />
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            OGQ 점심 메뉴 룰렛
+            OGQ 점심 메뉴 & 커피 룰렛
           </h1>
-          <p className="text-gray-600">
-            오늘 점심 뭐 먹을지 고민될 때 룰렛 돌리고 빨랑 갑시다
-          </p>
         </header>
 
+        {/* 탭 메뉴 */}
         <div className="flex justify-center mb-8">
           <div className="bg-white rounded-lg shadow-lg p-2 flex flex-wrap">
             {["roulette", "coffee", "restaurants", "rankings"].map((tab) => (
@@ -322,18 +294,16 @@ const LunchRoulette = () => {
           </div>
         </div>
 
+        {/* 점심 룰렛 탭 */}
         {activeTab === "roulette" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
             {restaurants.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🍽️</div>
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  등록된 맛집이 없습니다
-                </h3>
-                <p className="text-gray-500 mb-6">먼저 맛집을 등록해주세요!</p>
+                <p className="text-gray-500 mb-6">맛집을 등록해주세요!</p>
                 <button
                   onClick={() => setActiveTab("restaurants")}
-                  className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                 >
                   맛집 등록하러 가기
                 </button>
@@ -341,7 +311,6 @@ const LunchRoulette = () => {
             ) : (
               <>
                 <RouletteWheel />
-
                 <div className="text-center mb-6">
                   <button
                     onClick={spinRoulette}
@@ -349,50 +318,22 @@ const LunchRoulette = () => {
                     className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${
                       isSpinning
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"
+                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
                     }`}
                   >
-                    {isSpinning ? (
-                      <>
-                        <RotateCcw
-                          className="inline-block mr-2 animate-spin"
-                          size={20}
-                        />
-                        돌리는 중...
-                      </>
-                    ) : (
-                      "🎲 룰렛 돌리기"
-                    )}
+                    {isSpinning ? "돌리는 중..." : "🎲 룰렛 돌리기"}
                   </button>
                 </div>
-
-                {selectedRestaurant && !isSpinning && (
+                {selectedRestaurant && (
                   <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-green-700 mb-2">
-                        🎉 오늘의 점심은!
+                        오늘의 점심은!
                       </h3>
-                      <div className="bg-white rounded-lg p-4 shadow-md">
-                        <h4 className="text-xl font-bold text-gray-800 mb-2">
-                          {selectedRestaurant.name}
-                        </h4>
-                        <div className="flex justify-center items-center space-x-4 text-sm text-gray-600">
-                          <span className="bg-blue-100 px-3 py-1 rounded-full">
-                            {selectedRestaurant.category}
-                          </span>
-                          <span className="flex items-center">
-                            <MapPin size={16} className="mr-1" />
-                            {selectedRestaurant.distance}
-                          </span>
-                          <span className="flex items-center">
-                            <Star size={16} className="mr-1 text-yellow-500" />
-                            {selectedRestaurant.rating}
-                          </span>
-                        </div>
-                      </div>
+                      <h4 className="text-xl font-bold">{selectedRestaurant.name}</h4>
                       <button
                         onClick={() => voteForRestaurant(selectedRestaurant.id)}
-                        className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                       >
                         👍 개추
                       </button>
@@ -404,145 +345,93 @@ const LunchRoulette = () => {
           </div>
         )}
 
+        {/* 커피 내기 룰렛 탭 */}
         {activeTab === "coffee" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-                <Coffee className="mr-3 text-orange-500" />
-                커피 내기 룰렛
+              <h2 className="text-2xl font-bold flex items-center">
+                <Coffee className="mr-3 text-orange-500" /> 커피 내기 룰렛
               </h2>
               <div className="flex space-x-2">
                 {coffeeMembers.length > 0 && (
                   <button
                     onClick={clearAllMembers}
-                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                   >
                     🗑️ 전체 삭제
                   </button>
                 )}
                 <button
                   onClick={() => setShowAddMemberForm(!showAddMemberForm)}
-                  className="flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
                 >
-                  <Plus size={20} className="mr-2" />
-                  멤버 추가
+                  <Plus size={20} className="mr-2" /> 멤버 추가
                 </button>
               </div>
             </div>
 
             {showAddMemberForm && (
               <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold mb-4">새 멤버 등록</h3>
-                <div className="flex gap-4">
-                  <input
-                    type="text"
-                    placeholder="멤버 이름"
-                    value={newMember}
-                    onChange={(e) => setNewMember(e.target.value)}
-                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                  <button
-                    onClick={() => setShowAddMemberForm(false)}
-                    className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50"
-                  >
-                    취소
-                  </button>
-                  <button
-                    onClick={addMember}
-                    className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
-                  >
-                    등록
-                  </button>
-                </div>
+                <input
+                  type="text"
+                  placeholder="멤버 이름"
+                  value={newMember}
+                  onChange={(e) => setNewMember(e.target.value)}
+                  className="px-3 py-2 border rounded-md"
+                />
+                <button onClick={addMember} className="ml-2 px-4 py-2 bg-orange-500 text-white rounded-md">
+                  등록
+                </button>
               </div>
             )}
 
             {coffeeMembers.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">☕</div>
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  등록된 멤버가 없습니다
-                </h3>
-                <p className="text-gray-500 mb-6">
-                  커피 내기에 참여할 멤버들을 등록해주세요!
-                </p>
-                <button
-                  onClick={() => setShowAddMemberForm(true)}
-                  className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
-                >
-                  멤버 등록하기
-                </button>
+                <p className="text-gray-500">멤버를 등록해주세요!</p>
               </div>
             ) : (
               <>
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">참여 멤버 ({coffeeMembers.length}명)</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {coffeeMembers.map((member, index) => (
-                      <span
-                        key={member}
-                        className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm flex items-center"
+                  {coffeeMembers.map((m) => (
+                    <span
+                      key={m}
+                      className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm m-1"
+                    >
+                      {m}
+                      <button
+                        onClick={() => removeMember(m)}
+                        className="ml-2 text-orange-600"
                       >
-                        {member}
-                        <button
-                          onClick={() => removeMember(member)}
-                          className="ml-2 text-orange-600 hover:text-orange-800"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
+                        ×
+                      </button>
+                    </span>
+                  ))}
                 </div>
-
                 <CoffeeRouletteWheel />
-
                 <div className="text-center mb-6">
                   <button
                     onClick={spinCoffeeRoulette}
                     disabled={isCoffeeSpinning || coffeeMembers.length < 2}
                     className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${
-                      isCoffeeSpinning || coffeeMembers.length < 2
+                      isCoffeeSpinning
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transform hover:scale-105"
+                        : "bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700"
                     }`}
                   >
-                    {isCoffeeSpinning ? (
-                      <>
-                        <RotateCcw
-                          className="inline-block mr-2 animate-spin"
-                          size={20}
-                        />
-                        돌리는 중...
-                      </>
-                    ) : (
-                      "☕ 커피 내기 시작!"
-                    )}
+                    {isCoffeeSpinning ? "돌리는 중..." : "☕ 룰렛 돌리기"}
                   </button>
                 </div>
-
-                {selectedCoffeeMembers.length > 0 && !isCoffeeSpinning && (
-                  <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
-                    <div className="text-center">
-                      <h3 className="text-2xl font-bold text-orange-700 mb-2">
-                        ☕ 커피 내실 분은!
-                      </h3>
-                      <div className="bg-white rounded-lg p-4 shadow-md">
-                        <div className="flex flex-wrap justify-center gap-2">
-                          {selectedCoffeeMembers.map((member, index) => (
-                            <span
-                              key={member}
-                              className="bg-orange-500 text-white px-4 py-2 rounded-full font-bold text-lg"
-                            >
-                              {member}
-                            </span>
-                          ))}
-                        </div>
-                        <p className="text-gray-600 mt-3">
-                          총 {selectedCoffeeMembers.length}명이 선택되었습니다!
-                        </p>
-                      </div>
-                    </div>
+                {selectedCoffeeMembers.length > 0 && (
+                  <div className="bg-gradient-to-r from-yellow-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
+                    <h3 className="text-xl font-bold text-orange-700 mb-2 text-center">
+                      오늘의 커피 당첨자 🎉
+                    </h3>
+                    <ul className="text-center">
+                      {selectedCoffeeMembers.map((m) => (
+                        <li key={m} className="font-medium text-lg">{m}</li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </>
@@ -550,174 +439,33 @@ const LunchRoulette = () => {
           </div>
         )}
 
+        {/* 맛집 목록 탭 */}
         {activeTab === "restaurants" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">맛집 목록</h2>
+              <h2 className="text-2xl font-bold">🍽️ 맛집 목록</h2>
               <div className="flex space-x-2">
                 {restaurants.length > 0 && (
                   <button
                     onClick={clearAllData}
-                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                   >
                     🗑️ 전체 삭제
                   </button>
                 )}
                 <button
                   onClick={() => setShowAddForm(!showAddForm)}
-                  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                 >
-                  <Plus size={20} className="mr-2" />
-                  맛집 추가
+                  <Plus size={20} className="mr-2" /> 맛집 추가
                 </button>
               </div>
             </div>
 
             {showAddForm && (
               <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold mb-4">새 맛집 등록</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <input
-                    type="text"
-                    placeholder="가게 이름"
-                    value={newRestaurant.name}
-                    onChange={(e) =>
-                      setNewRestaurant({
-                        ...newRestaurant,
-                        name: e.target.value,
-                      })
-                    }
-                    className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <select
-                    value={newRestaurant.category}
-                    onChange={(e) =>
-                      setNewRestaurant({
-                        ...newRestaurant,
-                        category: e.target.value,
-                      })
-                    }
-                    className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">카테고리 선택</option>
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="text"
-                    placeholder="거리 (예: 도보 5분)"
-                    value={newRestaurant.distance}
-                    onChange={(e) =>
-                      setNewRestaurant({
-                        ...newRestaurant,
-                        distance: e.target.value,
-                      })
-                    }
-                    className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="flex justify-end mt-4 space-x-2">
-                  <button
-                    onClick={() => setShowAddForm(false)}
-                    className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50"
-                  >
-                    취소
-                  </button>
-                  <button
-                    onClick={addRestaurant}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                  >
-                    등록
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {restaurants.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">🍔</div>
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  등록된 맛집이 없습니다
-                </h3>
-                <p className="text-gray-500 mb-6">
-                  첫 번째 맛집을 등록해보세요!
-                </p>
-                <button
-                  onClick={() => setShowAddForm(true)}
-                  className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                  맛집 등록하기
-                </button>
-              </div>
-            ) : (
-              <div className="grid gap-6">
-                {restaurants.map((restaurant) => (
-                  <div
-                    key={restaurant.id}
-                    className="border rounded-lg p-6 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">
-                          {restaurant.name}
-                        </h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                          <span className="bg-blue-100 px-3 py-1 rounded-full">
-                            {restaurant.category}
-                          </span>
-                          <span className="flex items-center">
-                            <MapPin size={16} className="mr-1" />
-                            {restaurant.distance}
-                          </span>
-                          <span className="flex items-center">
-                            <Star size={16} className="mr-1 text-yellow-500" />
-                            {restaurant.rating}
-                          </span>
-                          <span className="flex items-center">
-                            <Users size={16} className="mr-1" />
-                            {restaurant.votes}표
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => voteForRestaurant(restaurant.id)}
-                          className="px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
-                        >
-                          👍 추천
-                        </button>
-                        <button
-                          onClick={() => deleteRestaurant(restaurant.id)}
-                          className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
-                        >
-                          🗑️ 삭제
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-gray-700 flex items-center">
-                        <MessageSquare size={16} className="mr-2" />
-                        리뷰 ({restaurant.reviews.length})
-                      </h4>
-
-                      {restaurant.reviews.map((review, index) => (
-                        <div key={index} className="bg-gray-50 rounded-md p-3">
-                          <div className="flex justify-between items-start mb-1">
-                            <span className="font-medium text-gray-700">
-                              {review.user}
-                            </span>
-                            <div className="flex items-center">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  size={14}
-                                  className={
-                                    i < review.rating
-                                      ? "text-yellow-500 fill-current"
-                                      : "text-gray-300"
-                                  }
-                                />
+                <input
+                  type="text"
+                  placeholder="맛집 이름"
+                  value={newRestaurant.name}
+                 
