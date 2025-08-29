@@ -14,12 +14,13 @@ import {
 
 // Firebase 설정 (실제 사용시 환경변수로 관리 필요)
 const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-app-id"
+  apiKey: "AIzaSyD8mqTmsrPpZ78TnlG2futeve5hEc3aEFI",
+  authDomain: "lunchroulette-4758c.firebaseapp.com",
+  databaseURL: "https://lunchroulette-4758c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "lunchroulette-4758c",
+  storageBucket: "lunchroulette-4758c.firebasestorage.app",
+  messagingSenderId: "312740196547",
+  appId: "1:312740196547:web:c05ecc89cfeaae16453276"
 };
 
 const LunchRoulette = () => {
