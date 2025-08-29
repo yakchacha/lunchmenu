@@ -321,9 +321,9 @@ const LunchRoulette = () => {
     }
   };
 
-  // 전체 멤버 삭제 함수 (Firebase 연동)
+  // 전체 팀원 삭제 함수 (Firebase 연동)
   const clearAllMembers = async () => {
-    if (window.confirm("정말로 모든 멤버를 삭제하시겠습니까?")) {
+    if (window.confirm("정말로 모든 팀원을 삭제하시겠습니까?")) {
       if (!isOnline) {
         alert('오프라인 상태입니다.');
         return;
@@ -336,7 +336,7 @@ const LunchRoulette = () => {
         await Promise.all(deletePromises);
         setSelectedCoffeeMembers([]);
       } catch (error) {
-        console.error('전체 멤버 삭제 실패:', error);
+        console.error('전체 팀원 삭제 실패:', error);
         alert('삭제에 실패했습니다.');
       } finally {
         setIsSyncing(false);
@@ -567,7 +567,7 @@ const LunchRoulette = () => {
                   <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-green-700 mb-2">
-                        🎉 오늘의 점심은!
+                        오늘의 점심 메뉴
                       </h3>
                       <div className="bg-white rounded-lg p-4 shadow-md">
                         <h4 className="text-xl font-bold text-gray-800 mb-2">
@@ -624,7 +624,7 @@ const LunchRoulette = () => {
                   disabled={!isOnline}
                 >
                   <Plus size={20} className="mr-2" />
-                  멤버 추가
+                  팀원 추가
                 </button>
               </div>
             </div>
@@ -635,7 +635,7 @@ const LunchRoulette = () => {
                 <div className="flex gap-4">
                   <input
                     type="text"
-                    placeholder="멤버 이름"
+                    placeholder="팀원 이름"
                     value={newMember}
                     onChange={(e) => setNewMember(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addMember()}
@@ -663,23 +663,23 @@ const LunchRoulette = () => {
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">☕</div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  등록된 멤버가 없습니다
+                  등록된 팀원이 없습니다
                 </h3>
                 <p className="text-gray-500 mb-6">
-                  커피 내기에 참여할 멤버들을 등록해주세요!
+                  커피 내기에 참여할 팀원들을 등록해주세요!
                 </p>
                 <button
                   onClick={() => setShowAddMemberForm(true)}
                   className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:bg-gray-400"
                   disabled={!isOnline}
                 >
-                  멤버 등록하기
+                  팀원 등록하기
                 </button>
               </div>
             ) : (
               <>
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">참여 멤버 ({coffeeMembers.length}명)</h3>
+                  <h3 className="text-lg font-semibold mb-3">참여 팀원 ({coffeeMembers.length}명)</h3>
                   <div className="flex flex-wrap gap-2">
                     {coffeeMembers.map((member) => (
                       <span
@@ -729,7 +729,7 @@ const LunchRoulette = () => {
                   <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-orange-700 mb-2">
-                        ☕ 커피 내실 분은!
+                        팀원들에게 커피를 사줄 기회를 얻은 행운의 당첨자는?
                       </h3>
                       <div className="bg-white rounded-lg p-4 shadow-md">
                         <div className="flex flex-wrap justify-center gap-2">
