@@ -1073,9 +1073,8 @@ const LunchRoulette = () => {
                   </div>
                 ))}
             </div>
-          </div>
-        )}
-      {/* 제작자 정보 */}
+        
+        {/* 제작자 정보 - 여기에 추가 */}
         <div className="max-w-4xl mx-auto mt-8 text-center text-gray-500 text-sm">
           <div className="border-t pt-6">
             <p>마켓사업본부 박진유 제작</p>
@@ -1090,6 +1089,9 @@ const LunchRoulette = () => {
           </div>
         </div>
       </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
