@@ -128,7 +128,7 @@ const LunchRoulette = () => {
 
     setTimeout(() => {
       const shuffled = [...coffeeMembers].sort(() => Math.random() - 0.5);
-      const numSelected = Math.floor(Math.random() * Math.min(3, coffeeMembers.length - 1)) + 1;
+      const numSelected = 1;
       setSelectedCoffeeMembers(shuffled.slice(0, numSelected));
       setIsCoffeeSpinning(false);
     }, 2000);
@@ -743,7 +743,7 @@ const LunchRoulette = () => {
                           ))}
                         </div>
                         <p className="text-gray-600 mt-3">
-                          이 {selectedCoffeeMembers.length}명이 선택되었습니다!
+                          오늘의 주인공, 감사하십시오
                         </p>
                       </div>
                     </div>
