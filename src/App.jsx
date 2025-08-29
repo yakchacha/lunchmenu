@@ -1,3 +1,6 @@
+## App.jsx (완전 수정 버전)
+
+```javascript
 import React, { useState, useEffect } from "react";
 import {
   MapPin,
@@ -12,16 +15,392 @@ import {
   WifiOff,
 } from "lucide-react";
 
-// Firebase 설정 (실제 사용시 환경변수로 관리 필요)
-const firebaseConfig = {
-  apiKey: "AIzaSyD8mqTmsrPpZ78TnlG2futeve5hEc3aEFI",
-  authDomain: "lunchroulette-4758c.firebaseapp.com",
-  databaseURL: "https://lunchroulette-4758c-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "lunchroulette-4758c",
-  storageBucket: "lunchroulette-4758c.firebasestorage.app",
-  messagingSenderId: "312740196547",
-  appId: "1:312740196547:web:c05ecc89cfeaae16453276"
-};
+// Firebase imports 추가
+import { db } from './firebase';
+import { 
+  collection, 
+  addDoc, 
+  onSnapshot, 
+  deleteDoc, 
+  doc,
+  updateDoc,
+  getDocs 
+} from 'firebase/firestore';
+
+const LunchRoulette = () => {
+  const [restaurants, setRestaurants] = useState([]);
+  const [coffeeMembers, setCoffeeMembers] = useState([]);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [selectedCoffeeMembers, setSelectedCoffeeMembers] = useState([]);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [isCoffeeSpinning, setIsCoffeeSpinning] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddMemberForm, setShowAddMemberForm] = useState(false);
+  const [activeTab, setActiveTab] = useState("roulette");
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [newRestaurant, setNewRestaurant] = useState({
+    name: "",
+    category: "",
+    distance: "",
+  });
+  const [newMember, setNewMember] = useState("");
+  const [newReview, setNewReview] = useState({
+    restaurantId: null,
+    user: "",
+    rating: 5,
+    comment: "",
+  });
+
+  const categories = [
+    "한식",
+    "양식",
+    "일식",
+    "중식",
+    "아시안",
+    "패스트푸드",
+    "기타",
+  ];
+
+  // Firebase 실시간 동기화 및 초기 설정
+  useEffect(() => {
+    // 맛집 데이터 실시간 동기화
+    const unsubscribeRestaurants = onSnapshot(
+      collection(db, 'restaurants'), 
+      (snapshot) => {
+        const restaurantList = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setRestaurants(restaurantList);
+      },
+      (error) => {
+        console.error('실시간 동기화 오류:', error);
+      }
+    );
+
+    // 멤버 데이터 실시간 동기화
+    const unsubscribeMembers = onSnapshot(
+      collection(db, 'members'), 
+      (snapshot) => {
+        const memberList = snapshot.docs.map(doc => ({
+          id: doc.id,
+          name: doc.data().name
+        }));
+        setCoffeeMembers(memberList.map(member => member.name));
+      },
+      (error) => {
+        console.error('멤버 동기화 오류:', error);
+      }
+    );
+
+    // 온라인/오프라인 상태 감지
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      unsubscribeRestaurants();
+      unsubscribeMembers();
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const spinRoulette = () => {
+    setIsSpinning(true);
+    setSelectedRestaurant(null);
+
+    setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * restaurants.length);
+      setSelectedRestaurant(restaurants[randomIndex]);
+      setIsSpinning(false);
+    }, 2000);
+  };
+
+  const spinCoffeeRoulette = () => {
+    if (coffeeMembers.length < 2) {
+      alert("최소 2명 이상의 멤버가 필요합니다!");
+      return;
+    }
+    
+    setIsCoffeeSpinning(true);
+    setSelectedCoffeeMembers([]);
+
+    setTimeout(() => {
+      const shuffled = [...coffeeMembers].sort(() => Math.random() - 0.5);
+      const numSelected = Math.floor(Math.random() * Math.min(3, coffeeMembers.length - 1)) + 1;
+      setSelectedCoffeeMembers(shuffled.slice(0, numSelected));
+      setIsCoffeeSpinning(false);
+    }, 2000);
+  };
+
+  // 맛집 추가 함수 (Firebase 연동)
+  const addRestaurant = async () => {
+    if (newRestaurant.name && newRestaurant.category) {
+      if (!isOnline) {
+        alert('오프라인 상태입니다. 인터넷 연결을 확인해주세요.');
+        return;
+      }
+      
+      setIsSyncing(true);
+      try {
+        const restaurant = {
+          ...newRestaurant,
+          rating: 0,
+          reviews: [],
+          votes: 0,
+          createdAt: new Date().toISOString(),
+        };
+        
+        // Firebase에 실제 저장
+        await addDoc(collection(db, 'restaurants'), restaurant);
+        
+        setNewRestaurant({ name: "", category: "", distance: "" });
+        setShowAddForm(false);
+        
+      } catch (error) {
+        console.error('맛집 추가 실패:', error);
+        alert('데이터 저장에 실패했습니다. 다시 시도해주세요.');
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
+  // 멤버 추가 함수 (Firebase 연동)
+  const addMember = async () => {
+    if (newMember.trim() && !coffeeMembers.includes(newMember.trim())) {
+      if (!isOnline) {
+        alert('오프라인 상태입니다.');
+        return;
+      }
+      
+      setIsSyncing(true);
+      try {
+        // Firebase에 실제 저장
+        await addDoc(collection(db, 'members'), {
+          name: newMember.trim(),
+          createdAt: new Date().toISOString()
+        });
+        
+        setNewMember("");
+        setShowAddMemberForm(false);
+        
+      } catch (error) {
+        console.error('멤버 추가 실패:', error);
+        alert('데이터 저장에 실패했습니다.');
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
+  // 멤버 삭제 함수 (Firebase 연동)
+  const removeMember = async (memberToRemove) => {
+    if (!isOnline) {
+      alert('오프라인 상태입니다.');
+      return;
+    }
+
+    setIsSyncing(true);
+    try {
+      // Firebase에서 해당 멤버 찾아서 삭제
+      const membersSnapshot = await getDocs(collection(db, 'members'));
+      const memberDoc = membersSnapshot.docs.find(doc => doc.data().name === memberToRemove);
+      
+      if (memberDoc) {
+        await deleteDoc(doc(db, 'members', memberDoc.id));
+      }
+    } catch (error) {
+      console.error('멤버 삭제 실패:', error);
+      alert('삭제에 실패했습니다.');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // 리뷰 추가 함수 (Firebase 연동)
+  const addReview = async (restaurantId) => {
+    if (newReview.user && newReview.comment) {
+      if (!isOnline) {
+        alert('오프라인 상태입니다.');
+        return;
+      }
+
+      setIsSyncing(true);
+      try {
+        const restaurant = restaurants.find(r => r.id === restaurantId);
+        const updatedReviews = [
+          ...restaurant.reviews,
+          {
+            user: newReview.user,
+            rating: newReview.rating,
+            comment: newReview.comment,
+            createdAt: new Date().toISOString(),
+          },
+        ];
+        const avgRating = updatedReviews.reduce((sum, review) => sum + review.rating, 0) / updatedReviews.length;
+        
+        // Firebase 업데이트
+        await updateDoc(doc(db, 'restaurants', restaurantId), {
+          reviews: updatedReviews,
+          rating: Math.round(avgRating * 10) / 10,
+        });
+        
+        setNewReview({ restaurantId: null, user: "", rating: 5, comment: "" });
+      } catch (error) {
+        console.error('리뷰 추가 실패:', error);
+        alert('리뷰 저장에 실패했습니다.');
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
+  // 추천 투표 함수 (Firebase 연동)
+  const voteForRestaurant = async (restaurantId) => {
+    if (!isOnline) {
+      alert('오프라인 상태입니다.');
+      return;
+    }
+
+    setIsSyncing(true);
+    try {
+      const restaurant = restaurants.find(r => r.id === restaurantId);
+      await updateDoc(doc(db, 'restaurants', restaurantId), {
+        votes: restaurant.votes + 1
+      });
+    } catch (error) {
+      console.error('투표 실패:', error);
+      alert('투표에 실패했습니다.');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // 맛집 삭제 함수 (Firebase 연동)
+  const deleteRestaurant = async (restaurantId) => {
+    if (confirm('정말로 이 맛집을 삭제하시겠습니까?')) {
+      if (!isOnline) {
+        alert('오프라인 상태입니다.');
+        return;
+      }
+
+      setIsSyncing(true);
+      try {
+        await deleteDoc(doc(db, 'restaurants', restaurantId));
+      } catch (error) {
+        console.error('삭제 실패:', error);
+        alert('삭제에 실패했습니다.');
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
+  // 전체 맛집 삭제 함수 (Firebase 연동)
+  const clearAllData = async () => {
+    if (window.confirm("정말로 모든 맛집 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+      if (!isOnline) {
+        alert('오프라인 상태입니다.');
+        return;
+      }
+
+      setIsSyncing(true);
+      try {
+        const restaurantsSnapshot = await getDocs(collection(db, 'restaurants'));
+        const deletePromises = restaurantsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(deletePromises);
+        setSelectedRestaurant(null);
+      } catch (error) {
+        console.error('전체 삭제 실패:', error);
+        alert('삭제에 실패했습니다.');
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
+  // 전체 멤버 삭제 함수 (Firebase 연동)
+  const clearAllMembers = async () => {
+    if (window.confirm("정말로 모든 멤버를 삭제하시겠습니까?")) {
+      if (!isOnline) {
+        alert('오프라인 상태입니다.');
+        return;
+      }
+
+      setIsSyncing(true);
+      try {
+        const membersSnapshot = await getDocs(collection(db, 'members'));
+        const deletePromises = membersSnapshot.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(deletePromises);
+        setSelectedCoffeeMembers([]);
+      } catch (error) {
+        console.error('전체 멤버 삭제 실패:', error);
+        alert('삭제에 실패했습니다.');
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
+  const RouletteWheel = () => (
+    <div className="relative w-80 h-80 mx-auto mb-8">
+      <div
+        className={`w-full h-full rounded-full border-8 border-blue-500 relative overflow-hidden ${
+          isSpinning ? "animate-spin" : ""
+        }`}
+      >
+        {restaurants.map((restaurant, index) => {
+          const angle = (360 / restaurants.length) * index;
+          const nextAngle = (360 / restaurants.length) * (index + 1);
+          const midAngle = (angle + nextAngle) / 2;
+
+          const colors = [
+            "bg-red-400",
+            "bg-blue-400",
+            "bg-green-400",
+            "bg-yellow-400",
+            "bg-purple-400",
+            "bg-pink-400",
+            "bg-indigo-400",
+            "bg-orange-400",
+          ];
+
+          return (
+            <div
+              key={restaurant.id}
+              className={`absolute w-full h-full ${
+                colors[index % colors.length]
+              }`}
+              style={{
+                clipPath: `polygon(50% 50%, ${
+                  50 + 50 * Math.cos((angle * Math.PI) / 180)
+                }% ${50 + 50 * Math.sin((angle * Math.PI) / 180)}%, ${
+                  50 + 50 * Math.cos((nextAngle * Math.PI) / 180)
+                }% ${50 + 50 * Math.sin((nextAngle * Math.PI) / 180)}%)`,
+              }}
+            >
+              <div
+                className="absolute text-white font-bold text-sm whitespace-nowrap"
+                style={{
+                  left: "50%",
+                  top: "50%",
+                  transform: `translate(-50%, -50%) rotate(${midAngle}deg) translateY(-80px)`,
+                  transformOrigin: "center",
+                }}
+              >
+                {restaurant.name}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+        <div className="w-0 h-0 border-l-4 border-r-4 border-b
 
 const LunchRoulette = () => {
   const [restaurants, setRestaurants] = useState([]);
