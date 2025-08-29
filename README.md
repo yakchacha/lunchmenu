@@ -1,3 +1,5 @@
+[![점심 룰렛](https://img.shields.io/badge/점심룰렛-바로가기-blue)](https://lunchmenu-ogq.vercel.app/)
+
 # OGQ 점심 룰렛
 1. 오늘 점심 뭐 먹을지 모르겠을 때 룰렛을 켜세요
 2. 룰렛을 돌립니다
