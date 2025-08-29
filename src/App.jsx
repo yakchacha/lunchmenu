@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MapPin,
   Star,
@@ -8,7 +8,19 @@ import {
   RotateCcw,
   Trophy,
   Coffee,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
+
+// Firebase 설정 (실제 사용시 환경변수로 관리 필요)
+const firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "your-app-id"
+};
 
 const LunchRoulette = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -20,6 +32,8 @@ const LunchRoulette = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAddMemberForm, setShowAddMemberForm] = useState(false);
   const [activeTab, setActiveTab] = useState("roulette");
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [newRestaurant, setNewRestaurant] = useState({
     name: "",
     category: "",
@@ -42,6 +56,76 @@ const LunchRoulette = () => {
     "패스트푸드",
     "기타",
   ];
+
+  // Firebase 초기화 및 데이터 로드 시뮬레이션
+  useEffect(() => {
+    loadInitialData();
+    
+    // 온라인/오프라인 상태 감지
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const loadInitialData = async () => {
+    setIsSyncing(true);
+    try {
+      // 실제로는 Firebase에서 데이터를 가져옴
+      // const restaurantsSnapshot = await getDocs(collection(db, 'restaurants'));
+      // const membersSnapshot = await getDocs(collection(db, 'members'));
+      
+      // 시뮬레이션: localStorage에서 데이터 로드 (Firebase 대신 임시)
+      const savedRestaurants = localStorage.getItem('ogq-restaurants');
+      const savedMembers = localStorage.getItem('ogq-members');
+      
+      if (savedRestaurants) {
+        setRestaurants(JSON.parse(savedRestaurants));
+      }
+      
+      if (savedMembers) {
+        setCoffeeMembers(JSON.parse(savedMembers));
+      }
+    } catch (error) {
+      console.error('데이터 로드 실패:', error);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const saveToFirebase = async (collection, data) => {
+    if (!isOnline) {
+      alert('오프라인 상태입니다. 인터넷 연결을 확인해주세요.');
+      return false;
+    }
+    
+    setIsSyncing(true);
+    try {
+      // 실제로는 Firebase에 저장
+      // await addDoc(collection(db, collection), data);
+      
+      // 시뮬레이션: localStorage에 저장
+      if (collection === 'restaurants') {
+        localStorage.setItem('ogq-restaurants', JSON.stringify(data));
+      } else if (collection === 'members') {
+        localStorage.setItem('ogq-members', JSON.stringify(data));
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Firebase 저장 실패:', error);
+      alert('데이터 저장에 실패했습니다. 다시 시도해주세요.');
+      return false;
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const spinRoulette = () => {
     setIsSpinning(true);
@@ -71,7 +155,7 @@ const LunchRoulette = () => {
     }, 2000);
   };
 
-  const addRestaurant = () => {
+  const addRestaurant = async () => {
     if (newRestaurant.name && newRestaurant.category) {
       const restaurant = {
         id: Date.now(),
@@ -79,71 +163,96 @@ const LunchRoulette = () => {
         rating: 0,
         reviews: [],
         votes: 0,
+        createdAt: new Date().toISOString(),
       };
-      setRestaurants([...restaurants, restaurant]);
-      setNewRestaurant({ name: "", category: "", distance: "" });
-      setShowAddForm(false);
+      
+      const updatedRestaurants = [...restaurants, restaurant];
+      setRestaurants(updatedRestaurants);
+      
+      const success = await saveToFirebase('restaurants', updatedRestaurants);
+      if (success) {
+        setNewRestaurant({ name: "", category: "", distance: "" });
+        setShowAddForm(false);
+      } else {
+        // 실패시 롤백
+        setRestaurants(restaurants);
+      }
     }
   };
 
-  const addMember = () => {
+  const addMember = async () => {
     if (newMember.trim() && !coffeeMembers.includes(newMember.trim())) {
-      setCoffeeMembers([...coffeeMembers, newMember.trim()]);
-      setNewMember("");
-      setShowAddMemberForm(false);
+      const updatedMembers = [...coffeeMembers, newMember.trim()];
+      setCoffeeMembers(updatedMembers);
+      
+      const success = await saveToFirebase('members', updatedMembers);
+      if (success) {
+        setNewMember("");
+        setShowAddMemberForm(false);
+      } else {
+        // 실패시 롤백
+        setCoffeeMembers(coffeeMembers);
+      }
     }
   };
 
-  const removeMember = (memberToRemove) => {
-    setCoffeeMembers(coffeeMembers.filter(member => member !== memberToRemove));
+  const removeMember = async (memberToRemove) => {
+    const updatedMembers = coffeeMembers.filter(member => member !== memberToRemove);
+    setCoffeeMembers(updatedMembers);
+    await saveToFirebase('members', updatedMembers);
   };
 
-  const addReview = (restaurantId) => {
+  const addReview = async (restaurantId) => {
     if (newReview.user && newReview.comment) {
-      setRestaurants((prev) =>
-        prev.map((restaurant) => {
-          if (restaurant.id === restaurantId) {
-            const updatedReviews = [
-              ...restaurant.reviews,
-              {
-                user: newReview.user,
-                rating: newReview.rating,
-                comment: newReview.comment,
-              },
-            ];
-            const avgRating =
-              updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
-              updatedReviews.length;
-            return {
-              ...restaurant,
-              reviews: updatedReviews,
-              rating: Math.round(avgRating * 10) / 10,
-            };
-          }
-          return restaurant;
-        })
-      );
+      const updatedRestaurants = restaurants.map((restaurant) => {
+        if (restaurant.id === restaurantId) {
+          const updatedReviews = [
+            ...restaurant.reviews,
+            {
+              user: newReview.user,
+              rating: newReview.rating,
+              comment: newReview.comment,
+              createdAt: new Date().toISOString(),
+            },
+          ];
+          const avgRating =
+            updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
+            updatedReviews.length;
+          return {
+            ...restaurant,
+            reviews: updatedReviews,
+            rating: Math.round(avgRating * 10) / 10,
+          };
+        }
+        return restaurant;
+      });
+      
+      setRestaurants(updatedRestaurants);
+      await saveToFirebase('restaurants', updatedRestaurants);
       setNewReview({ restaurantId: null, user: "", rating: 5, comment: "" });
     }
   };
 
-  const voteForRestaurant = (restaurantId) => {
-    setRestaurants((prev) =>
-      prev.map((restaurant) =>
-        restaurant.id === restaurantId
-          ? { ...restaurant, votes: restaurant.votes + 1 }
-          : restaurant
-      )
+  const voteForRestaurant = async (restaurantId) => {
+    const updatedRestaurants = restaurants.map((restaurant) =>
+      restaurant.id === restaurantId
+        ? { ...restaurant, votes: restaurant.votes + 1 }
+        : restaurant
     );
+    
+    setRestaurants(updatedRestaurants);
+    await saveToFirebase('restaurants', updatedRestaurants);
   };
 
-  const deleteRestaurant = (restaurantId) => {
-    setRestaurants((prev) =>
-      prev.filter((restaurant) => restaurant.id !== restaurantId)
-    );
+  const deleteRestaurant = async (restaurantId) => {
+    if (confirm('정말로 이 맛집을 삭제하시겠습니까?')) {
+      const updatedRestaurants = restaurants.filter((restaurant) => restaurant.id !== restaurantId);
+      setRestaurants(updatedRestaurants);
+      await saveToFirebase('restaurants', updatedRestaurants);
+    }
   };
 
-  const clearAllData = () => {
+  const clearAllData = async () => {
     if (
       window.confirm(
         "정말로 모든 맛집 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
@@ -151,10 +260,11 @@ const LunchRoulette = () => {
     ) {
       setRestaurants([]);
       setSelectedRestaurant(null);
+      await saveToFirebase('restaurants', []);
     }
   };
 
-  const clearAllMembers = () => {
+  const clearAllMembers = async () => {
     if (
       window.confirm(
         "정말로 모든 멤버를 삭제하시겠습니까?"
@@ -162,6 +272,7 @@ const LunchRoulette = () => {
     ) {
       setCoffeeMembers([]);
       setSelectedCoffeeMembers([]);
+      await saveToFirebase('members', []);
     }
   };
 
@@ -285,12 +396,21 @@ const LunchRoulette = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 p-6">
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <img 
               src="https://i.imgur.com/EPQTCHV.png" 
               alt="OGQ 로고" 
               className="w-24 h-24 mx-auto rounded-full shadow-lg object-cover"
             />
+            {/* 연결 상태 표시 */}
+            <div className={`absolute -bottom-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center ${
+              isOnline ? 'bg-green-500' : 'bg-red-500'
+            }`}>
+              {isOnline ? 
+                <Wifi size={12} className="text-white" /> : 
+                <WifiOff size={12} className="text-white" />
+              }
+            </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             OGQ 점심 메뉴 룰렛
@@ -298,6 +418,16 @@ const LunchRoulette = () => {
           <p className="text-gray-600">
             오늘 점심 뭐 먹을지 고민될 때 룰렛 돌리고 빨랑 갑시다
           </p>
+          {!isOnline && (
+            <div className="mt-2 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2 inline-block">
+              오프라인 상태 - 데이터가 동기화되지 않습니다
+            </div>
+          )}
+          {isSyncing && (
+            <div className="mt-2 text-sm text-blue-600 bg-blue-50 rounded-lg px-3 py-2 inline-block">
+              데이터 동기화 중...
+            </div>
+          )}
         </header>
 
         <div className="flex justify-center mb-8">
@@ -415,6 +545,7 @@ const LunchRoulette = () => {
                   <button
                     onClick={clearAllMembers}
                     className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    disabled={!isOnline}
                   >
                     🗑️ 전체 삭제
                   </button>
@@ -422,6 +553,7 @@ const LunchRoulette = () => {
                 <button
                   onClick={() => setShowAddMemberForm(!showAddMemberForm)}
                   className="flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                  disabled={!isOnline}
                 >
                   <Plus size={20} className="mr-2" />
                   멤버 추가
@@ -440,6 +572,7 @@ const LunchRoulette = () => {
                     onChange={(e) => setNewMember(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addMember()}
                     className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    disabled={!isOnline}
                   />
                   <button
                     onClick={() => setShowAddMemberForm(false)}
@@ -449,9 +582,10 @@ const LunchRoulette = () => {
                   </button>
                   <button
                     onClick={addMember}
-                    className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
+                    className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 disabled:bg-gray-400"
+                    disabled={!isOnline || isSyncing}
                   >
-                    등록
+                    {isSyncing ? '저장중...' : '등록'}
                   </button>
                 </div>
               </div>
@@ -468,7 +602,8 @@ const LunchRoulette = () => {
                 </p>
                 <button
                   onClick={() => setShowAddMemberForm(true)}
-                  className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                  className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:bg-gray-400"
+                  disabled={!isOnline}
                 >
                   멤버 등록하기
                 </button>
@@ -486,7 +621,8 @@ const LunchRoulette = () => {
                         {member}
                         <button
                           onClick={() => removeMember(member)}
-                          className="ml-2 text-orange-600 hover:text-orange-800"
+                          className="ml-2 text-orange-600 hover:text-orange-800 disabled:opacity-50"
+                          disabled={!isOnline}
                         >
                           ×
                         </button>
@@ -558,14 +694,16 @@ const LunchRoulette = () => {
                 {restaurants.length > 0 && (
                   <button
                     onClick={clearAllData}
-                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:bg-gray-400"
+                    disabled={!isOnline}
                   >
                     🗑️ 전체 삭제
                   </button>
                 )}
                 <button
                   onClick={() => setShowAddForm(!showAddForm)}
-                  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
+                  disabled={!isOnline}
                 >
                   <Plus size={20} className="mr-2" />
                   맛집 추가
@@ -873,4 +1011,4 @@ const LunchRoulette = () => {
 };
 
 export default LunchRoulette;
-                        
+            
