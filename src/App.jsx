@@ -461,7 +461,7 @@ const LunchRoulette = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
           <div className="mb-4 relative">
