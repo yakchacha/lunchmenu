@@ -589,12 +589,20 @@ const LunchRoulette = () => {
                           </span>
                         </div>
                       </div>
-                      <button
+                      <div className="flex space-x-3 mt-4">
+                        <button
                         onClick={() => voteForRestaurant(selectedRestaurant.id)}
-                        className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                       >
                         👍 개추
                       </button>
+                      <button
+                        onClick={spinRoulette}
+                        className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                      >
+                        👎 한 번 더
+                      </button>
+                    </div>
                     </div>
                   </div>
                 )}
