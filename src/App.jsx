@@ -11,8 +11,6 @@ import {
   Wifi,
   WifiOff,
 } from "lucide-react";
-import { collection, addDoc, getFirestore } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
 
 // Firebase 설정
 const firebaseConfig = {
