@@ -1,6 +1,3 @@
-## App.jsx (완전 수정 버전)
-
-```javascript
 import React, { useState, useEffect } from "react";
 import {
   MapPin,
