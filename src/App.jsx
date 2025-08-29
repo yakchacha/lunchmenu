@@ -1073,6 +1073,10 @@ const LunchRoulette = () => {
                   </div>
                 ))}
             </div>
+          </div>
+        )}
+      </div>
+      </div>
         
         {/* 제작자 정보 - 여기에 추가 */}
         <div className="max-w-4xl mx-auto mt-8 text-center text-gray-500 text-sm">
@@ -1088,10 +1092,6 @@ const LunchRoulette = () => {
             </a>
           </div>
         </div>
-      </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
