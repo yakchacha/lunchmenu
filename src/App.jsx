@@ -589,7 +589,7 @@ const LunchRoulette = () => {
                           </span>
                         </div>
                       </div>
-                      <div className="flex space-x-3 mt-4">
+                      <div className="flex justify-center space-x-3 mt-4">
                         <button
                         onClick={() => voteForRestaurant(selectedRestaurant.id)}
                         className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
