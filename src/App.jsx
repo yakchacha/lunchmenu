@@ -483,10 +483,10 @@ const LunchRoulette = () => {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            OGQ 점심 메뉴 룰렛
+            OGQ 점심 룰렛
           </h1>
           <p className="text-gray-600">
-            오늘 점심 뭐 먹을지 고민될 때 룰렛 돌리고 빨랑 갑시다
+            점메추도 커피 내기도 OGQ와 함께 한큐에 끝내봅시다
           </p>
           {!isOnline && (
             <div className="mt-2 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2 inline-block">
@@ -512,8 +512,8 @@ const LunchRoulette = () => {
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
-                {tab === "roulette" && "🎯 룰렛"}
-                {tab === "coffee" && "☕ 커피내기"}
+                {tab === "roulette" && "🎯 점심 룰렛"}
+                {tab === "coffee" && "☕ 커피 내기"}
                 {tab === "restaurants" && "🍽️ 맛집 목록"}
                 {tab === "rankings" && "🏆 인기 순위"}
               </button>
