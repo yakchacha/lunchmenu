@@ -184,10 +184,10 @@ const LunchRoulette = () => {
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            🎯 점심 메뉴 룰렛
+            OGQ 점심 메뉴 룰렛
           </h1>
           <p className="text-gray-600">
-            오늘 점심 뭐 먹을지 고민되나요? 룰렛을 돌려보세요!
+            오늘 점심 뭐 먹을지 고민될 때 룰렛 돌리고 빨랑 갑시다
           </p>
         </header>
 
@@ -203,9 +203,9 @@ const LunchRoulette = () => {
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
-                {tab === "roulette" && "🎯 룰렛"}
-                {tab === "restaurants" && "🍽️ 맛집 목록"}
-                {tab === "rankings" && "🏆 인기 순위"}
+                {tab === "roulette" && "룰렛"}
+                {tab === "restaurants" && "🍽맛집 목록"}
+                {tab === "rankings" && "인기 순위"}
               </button>
             ))}
           </div>
@@ -283,7 +283,7 @@ const LunchRoulette = () => {
                         onClick={() => voteForRestaurant(selectedRestaurant.id)}
                         className="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                       >
-                        👍 이 선택 좋아요!
+                        👍 개추
                       </button>
                     </div>
                   </div>
