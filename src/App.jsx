@@ -422,9 +422,9 @@ const LunchRoulette = () => {
             "bg-green-400",
             "bg-cyan-400",
             "bg-lime-400",
-            "bg-mint-400",
-            "bg-seafoam-400",
-            "bg-sage-400",
+            "bg-slate-400",
+            "bg-zinc-400",
+            "bg-stone-400",
           ];
 
           return (
