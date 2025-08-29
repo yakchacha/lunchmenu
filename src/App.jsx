@@ -8,20 +8,25 @@ import {
   RotateCcw,
   Trophy,
   Clock,
+  Coffee,
 } from "lucide-react";
 
 const LunchRoulette = () => {
   const [restaurants, setRestaurants] = useState([]);
-
+  const [coffeeMembers, setCoffeeMembers] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [selectedCoffeeMembers, setSelectedCoffeeMembers] = useState([]);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [isCoffeeSpinning, setIsCoffeeSpinning] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddMemberForm, setShowAddMemberForm] = useState(false);
   const [activeTab, setActiveTab] = useState("roulette");
   const [newRestaurant, setNewRestaurant] = useState({
     name: "",
     category: "",
     distance: "",
   });
+  const [newMember, setNewMember] = useState("");
   const [newReview, setNewReview] = useState({
     restaurantId: null,
     user: "",
@@ -50,6 +55,23 @@ const LunchRoulette = () => {
     }, 2000);
   };
 
+  const spinCoffeeRoulette = () => {
+    if (coffeeMembers.length < 2) {
+      alert("최소 2명 이상의 멤버가 필요합니다!");
+      return;
+    }
+    
+    setIsCoffeeSpinning(true);
+    setSelectedCoffeeMembers([]);
+
+    setTimeout(() => {
+      const shuffled = [...coffeeMembers].sort(() => Math.random() - 0.5);
+      const numSelected = Math.floor(Math.random() * Math.min(3, coffeeMembers.length - 1)) + 1;
+      setSelectedCoffeeMembers(shuffled.slice(0, numSelected));
+      setIsCoffeeSpinning(false);
+    }, 2000);
+  };
+
   const addRestaurant = () => {
     if (newRestaurant.name && newRestaurant.category) {
       const restaurant = {
@@ -63,6 +85,18 @@ const LunchRoulette = () => {
       setNewRestaurant({ name: "", category: "", distance: "" });
       setShowAddForm(false);
     }
+  };
+
+  const addMember = () => {
+    if (newMember.trim() && !coffeeMembers.includes(newMember.trim())) {
+      setCoffeeMembers([...coffeeMembers, newMember.trim()]);
+      setNewMember("");
+      setShowAddMemberForm(false);
+    }
+  };
+
+  const removeMember = (memberToRemove) => {
+    setCoffeeMembers(coffeeMembers.filter(member => member !== memberToRemove));
   };
 
   const addReview = (restaurantId) => {
@@ -118,6 +152,17 @@ const LunchRoulette = () => {
     ) {
       setRestaurants([]);
       setSelectedRestaurant(null);
+    }
+  };
+
+  const clearAllMembers = () => {
+    if (
+      window.confirm(
+        "정말로 모든 멤버를 삭제하시겠습니까?"
+      )
+    ) {
+      setCoffeeMembers([]);
+      setSelectedCoffeeMembers([]);
     }
   };
 
@@ -179,10 +224,75 @@ const LunchRoulette = () => {
     </div>
   );
 
+  const CoffeeRouletteWheel = () => (
+    <div className="relative w-80 h-80 mx-auto mb-8">
+      <div
+        className={`w-full h-full rounded-full border-8 border-orange-500 relative overflow-hidden ${
+          isCoffeeSpinning ? "animate-spin" : ""
+        }`}
+      >
+        {coffeeMembers.map((member, index) => {
+          const angle = (360 / coffeeMembers.length) * index;
+          const nextAngle = (360 / coffeeMembers.length) * (index + 1);
+          const midAngle = (angle + nextAngle) / 2;
+
+          const colors = [
+            "bg-orange-400",
+            "bg-yellow-400",
+            "bg-amber-400",
+            "bg-red-400",
+            "bg-pink-400",
+            "bg-rose-400",
+            "bg-purple-400",
+            "bg-indigo-400",
+          ];
+
+          return (
+            <div
+              key={member}
+              className={`absolute w-full h-full ${
+                colors[index % colors.length]
+              }`}
+              style={{
+                clipPath: `polygon(50% 50%, ${
+                  50 + 50 * Math.cos((angle * Math.PI) / 180)
+                }% ${50 + 50 * Math.sin((angle * Math.PI) / 180)}%, ${
+                  50 + 50 * Math.cos((nextAngle * Math.PI) / 180)
+                }% ${50 + 50 * Math.sin((nextAngle * Math.PI) / 180)}%)`,
+              }}
+            >
+              <div
+                className="absolute text-white font-bold text-sm whitespace-nowrap"
+                style={{
+                  left: "50%",
+                  top: "50%",
+                  transform: `translate(-50%, -50%) rotate(${midAngle}deg) translateY(-80px)`,
+                  transformOrigin: "center",
+                }}
+              >
+                {member.length > 8 ? member.substring(0, 6) + '..' : member}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+        <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-red-600"></div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 p-6">
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
+          <div className="mb-4">
+            <img 
+              src="https://i.imgur.com/EPQTCHV.png" 
+              alt="OGQ 로고" 
+              className="w-24 h-24 mx-auto rounded-full shadow-lg object-cover"
+            />
+          </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             OGQ 점심 메뉴 룰렛
           </h1>
@@ -192,20 +302,21 @@ const LunchRoulette = () => {
         </header>
 
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-lg shadow-lg p-2 flex">
-            {["roulette", "restaurants", "rankings"].map((tab) => (
+          <div className="bg-white rounded-lg shadow-lg p-2 flex flex-wrap">
+            {["roulette", "coffee", "restaurants", "rankings"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 rounded-md font-medium transition-colors ${
+                className={`px-4 py-2 rounded-md font-medium transition-colors m-1 ${
                   activeTab === tab
                     ? "bg-blue-500 text-white"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
-                {tab === "roulette" && "룰렛"}
-                {tab === "restaurants" && "맛집 목록"}
-                {tab === "rankings" && "인기 순위"}
+                {tab === "roulette" && "🎯 룰렛"}
+                {tab === "coffee" && "☕ 커피내기"}
+                {tab === "restaurants" && "🍽️ 맛집 목록"}
+                {tab === "rankings" && "🏆 인기 순위"}
               </button>
             ))}
           </div>
@@ -285,6 +396,152 @@ const LunchRoulette = () => {
                       >
                         👍 개추
                       </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === "coffee" && (
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+                <Coffee className="mr-3 text-orange-500" />
+                커피 내기 룰렛
+              </h2>
+              <div className="flex space-x-2">
+                {coffeeMembers.length > 0 && (
+                  <button
+                    onClick={clearAllMembers}
+                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  >
+                    🗑️ 전체 삭제
+                  </button>
+                )}
+                <button
+                  onClick={() => setShowAddMemberForm(!showAddMemberForm)}
+                  className="flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                  <Plus size={20} className="mr-2" />
+                  멤버 추가
+                </button>
+              </div>
+            </div>
+
+            {showAddMemberForm && (
+              <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold mb-4">새 멤버 등록</h3>
+                <div className="flex gap-4">
+                  <input
+                    type="text"
+                    placeholder="멤버 이름"
+                    value={newMember}
+                    onChange={(e) => setNewMember(e.target.value)}
+                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                  <button
+                    onClick={() => setShowAddMemberForm(false)}
+                    className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={addMember}
+                    className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
+                  >
+                    등록
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {coffeeMembers.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">☕</div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                  등록된 멤버가 없습니다
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  커피 내기에 참여할 멤버들을 등록해주세요!
+                </p>
+                <button
+                  onClick={() => setShowAddMemberForm(true)}
+                  className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                  멤버 등록하기
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3">참여 멤버 ({coffeeMembers.length}명)</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {coffeeMembers.map((member, index) => (
+                      <span
+                        key={member}
+                        className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm flex items-center"
+                      >
+                        {member}
+                        <button
+                          onClick={() => removeMember(member)}
+                          className="ml-2 text-orange-600 hover:text-orange-800"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <CoffeeRouletteWheel />
+
+                <div className="text-center mb-6">
+                  <button
+                    onClick={spinCoffeeRoulette}
+                    disabled={isCoffeeSpinning || coffeeMembers.length < 2}
+                    className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${
+                      isCoffeeSpinning || coffeeMembers.length < 2
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transform hover:scale-105"
+                    }`}
+                  >
+                    {isCoffeeSpinning ? (
+                      <>
+                        <RotateCcw
+                          className="inline-block mr-2 animate-spin"
+                          size={20}
+                        />
+                        돌리는 중...
+                      </>
+                    ) : (
+                      "☕ 커피 내기 시작!"
+                    )}
+                  </button>
+                </div>
+
+                {selectedCoffeeMembers.length > 0 && !isCoffeeSpinning && (
+                  <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-orange-700 mb-2">
+                        ☕ 커피 내실 분은!
+                      </h3>
+                      <div className="bg-white rounded-lg p-4 shadow-md">
+                        <div className="flex flex-wrap justify-center gap-2">
+                          {selectedCoffeeMembers.map((member, index) => (
+                            <span
+                              key={member}
+                              className="bg-orange-500 text-white px-4 py-2 rounded-full font-bold text-lg"
+                            >
+                              {member}
+                            </span>
+                          ))}
+                        </div>
+                        <p className="text-gray-600 mt-3">
+                          총 {selectedCoffeeMembers.length}명이 선택되었습니다!
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -381,7 +638,7 @@ const LunchRoulette = () => {
 
             {restaurants.length === 0 ? (
               <div className="text-center py-12">
-                <div className="text-6xl mb-4">📝</div>
+                <div className="text-6xl mb-4">🍔</div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
                   등록된 맛집이 없습니다
                 </h3>
@@ -464,155 +721,3 @@ const LunchRoulette = () => {
                                       : "text-gray-300"
                                   }
                                 />
-                              ))}
-                            </div>
-                          </div>
-                          <p className="text-gray-600 text-sm">
-                            {review.comment}
-                          </p>
-                        </div>
-                      ))}
-
-                      <div className="bg-blue-50 rounded-md p-3">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                          <input
-                            type="text"
-                            placeholder="작성자"
-                            value={
-                              newReview.restaurantId === restaurant.id
-                                ? newReview.user
-                                : ""
-                            }
-                            onChange={(e) =>
-                              setNewReview({
-                                ...newReview,
-                                restaurantId: restaurant.id,
-                                user: e.target.value,
-                              })
-                            }
-                            className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                          <select
-                            value={
-                              newReview.restaurantId === restaurant.id
-                                ? newReview.rating
-                                : 5
-                            }
-                            onChange={(e) =>
-                              setNewReview({
-                                ...newReview,
-                                restaurantId: restaurant.id,
-                                rating: parseInt(e.target.value),
-                              })
-                            }
-                            className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          >
-                            {[1, 2, 3, 4, 5].map((rating) => (
-                              <option key={rating} value={rating}>
-                                {rating}점
-                              </option>
-                            ))}
-                          </select>
-                          <input
-                            type="text"
-                            placeholder="리뷰 작성"
-                            value={
-                              newReview.restaurantId === restaurant.id
-                                ? newReview.comment
-                                : ""
-                            }
-                            onChange={(e) =>
-                              setNewReview({
-                                ...newReview,
-                                restaurantId: restaurant.id,
-                                comment: e.target.value,
-                              })
-                            }
-                            className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                          <button
-                            onClick={() => addReview(restaurant.id)}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition-colors"
-                          >
-                            리뷰 등록
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === "rankings" && (
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-              <Trophy className="mr-3 text-yellow-500" />
-              인기 랭킹
-            </h2>
-            <div className="space-y-4">
-              {restaurants
-                .sort((a, b) => b.votes - a.votes)
-                .map((restaurant, index) => (
-                  <div
-                    key={restaurant.id}
-                    className={`flex items-center justify-between p-4 rounded-lg ${
-                      index === 0
-                        ? "bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200"
-                        : index === 1
-                        ? "bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-gray-200"
-                        : index === 2
-                        ? "bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200"
-                        : "bg-gray-50"
-                    }`}
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                          index === 0
-                            ? "bg-yellow-500"
-                            : index === 1
-                            ? "bg-gray-400"
-                            : index === 2
-                            ? "bg-orange-500"
-                            : "bg-gray-300"
-                        }`}
-                      >
-                        {index + 1}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-800">
-                          {restaurant.name}
-                        </h3>
-                        <div className="flex items-center space-x-3 text-sm text-gray-600">
-                          <span>{restaurant.category}</span>
-                          <span className="flex items-center">
-                            <Star size={14} className="mr-1 text-yellow-500" />
-                            {restaurant.rating}
-                          </span>
-                          <span className="flex items-center">
-                            <MessageSquare size={14} className="mr-1" />
-                            리뷰 {restaurant.reviews.length}개
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">
-                        {restaurant.votes}
-                      </div>
-                      <div className="text-sm text-gray-500">추천</div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default LunchRoulette;
