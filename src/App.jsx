@@ -357,14 +357,14 @@ const LunchRoulette = () => {
           const midAngle = (angle + nextAngle) / 2;
 
           const colors = [
-            "bg-red-400",
-            "bg-blue-400",
+            "bg-teal-400",
+            "bg-emerald-400",
             "bg-green-400",
-            "bg-yellow-400",
-            "bg-purple-400",
-            "bg-pink-400",
-            "bg-indigo-400",
-            "bg-orange-400",
+            "bg-cyan-400",
+            "bg-lime-400",
+            "bg-mint-400",
+            "bg-seafoam-400",
+            "bg-sage-400",
           ];
 
           return (
@@ -405,7 +405,7 @@ const LunchRoulette = () => {
   const CoffeeRouletteWheel = () => (
     <div className="relative w-80 h-80 mx-auto mb-8">
       <div
-        className={`w-full h-full rounded-full border-8 border-orange-500 relative overflow-hidden ${
+        className={`w-full h-full rounded-full border-8 border-teal-500 relative overflow-hidden ${
           isCoffeeSpinning ? "animate-spin" : ""
         }`}
       >
@@ -605,7 +605,7 @@ const LunchRoulette = () => {
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-                <Coffee className="mr-3 text-orange-500" />
+                <Coffee className="mr-3 text-teal-500" />
                 커피 내기 룰렛
               </h2>
               <div className="flex space-x-2">
@@ -620,7 +620,7 @@ const LunchRoulette = () => {
                 )}
                 <button
                   onClick={() => setShowAddMemberForm(!showAddMemberForm)}
-                  className="flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                  className="flex items-center px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
                   disabled={!isOnline}
                 >
                   <Plus size={20} className="mr-2" />
@@ -670,7 +670,7 @@ const LunchRoulette = () => {
                 </p>
                 <button
                   onClick={() => setShowAddMemberForm(true)}
-                  className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:bg-gray-400"
+                  className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors disabled:bg-gray-400"
                   disabled={!isOnline}
                 >
                   팀원 등록하기
@@ -684,12 +684,12 @@ const LunchRoulette = () => {
                     {coffeeMembers.map((member) => (
                       <span
                         key={member}
-                        className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm flex items-center"
+                        className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm flex items-center"
                       >
                         {member}
                         <button
                           onClick={() => removeMember(member)}
-                          className="ml-2 text-orange-600 hover:text-orange-800 disabled:opacity-50"
+                          className="ml-2 text-teal-600 hover:text-teal-800 disabled:opacity-50"
                           disabled={!isOnline}
                         >
                           ×
@@ -708,7 +708,7 @@ const LunchRoulette = () => {
                     className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${
                       isCoffeeSpinning || coffeeMembers.length < 2
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transform hover:scale-105"
+                        : "bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 transform hover:scale-105"
                     }`}
                   >
                     {isCoffeeSpinning ? (
@@ -726,9 +726,9 @@ const LunchRoulette = () => {
                 </div>
 
                 {selectedCoffeeMembers.length > 0 && !isCoffeeSpinning && (
-                  <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
+                  <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-6 border-2 border-teal-200">
                     <div className="text-center">
-                      <h3 className="text-2xl font-bold text-orange-700 mb-2">
+                      <h3 className="text-2xl font-bold text-teal-700 mb-2">
                         팀원들에게 커피를 사줄 기회를 얻은 행운의 당첨자는?
                       </h3>
                       <div className="bg-white rounded-lg p-4 shadow-md">
@@ -736,7 +736,7 @@ const LunchRoulette = () => {
                           {selectedCoffeeMembers.map((member) => (
                             <span
                               key={member}
-                              className="bg-orange-500 text-white px-4 py-2 rounded-full font-bold text-lg"
+                              className="bg-teal-500 text-white px-4 py-2 rounded-full font-bold text-lg"
                             >
                               {member}
                             </span>
