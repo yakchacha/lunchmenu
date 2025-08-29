@@ -1064,37 +1064,35 @@ const LunchRoulette = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">
-                        {restaurant.votes}
-                      </div>
-                      <div className="text-sm text-gray-500">추천</div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
-      </div>
-      </div>
-        
-        {/* 제작자 정보 - 여기에 추가 */}
-        <div className="max-w-4xl mx-auto mt-8 text-center text-gray-500 text-sm">
-          <div className="border-t pt-6">
-            <p>마켓사업본부 박진유 제작</p>
-            <a 
-              href="https://github.com/yakchacha/lunchmenu" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:text-blue-700 transition-colors"
-            >
-              GitHub 바로가기
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+                   <div className="text-right">
+                     <div className="text-2xl font-bold text-blue-600">
+                       {restaurant.votes}
+                     </div>
+                     <div className="text-sm text-gray-500">추천</div>
+                   </div>
+                 </div>
+               ))}
+           </div>
+         </div>
+       )}
+     </div>
+     
+     {/* 제작자 정보 */}
+     <div className="max-w-4xl mx-auto mt-8 text-center text-gray-500 text-sm">
+       <div className="border-t pt-6">
+         <p>마켓사업본부 박진유 제작</p>
+         <a 
+           href="https://github.com/yakchacha/lunchmenu" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           className="text-blue-500 hover:text-blue-700 transition-colors"
+         >
+           GitHub 바로가기
+         </a>
+       </div>
+     </div>
+   </div>
+ );
 };
 
 export default LunchRoulette;
