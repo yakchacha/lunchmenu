@@ -10,6 +10,7 @@ import {
   Coffee,
   Wifi,
   WifiOff,
+  X,
 } from "lucide-react";
 
 // Firebase imports 추가
@@ -665,7 +666,8 @@ const LunchRoulette = () => {
                     className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                     disabled={!isOnline}
                   >
-                    🗑️ 전체 삭제
+                    <X size={16} className="mr-2" />
+                    전체 삭제
                   </button>
                 )}
                 <button
@@ -812,15 +814,16 @@ const LunchRoulette = () => {
                 {restaurants.length > 0 && (
                   <button
                     onClick={clearAllData}
-                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:bg-gray-400"
+                    className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-red-500 text-white rounded-md md:rounded-lg hover:bg-red-600 transition-colors disabled:bg-gray-400"
                     disabled={!isOnline}
                   >
-                    🗑️ 전체 삭제
+                    <X size={16} className="mr-2" />
+                    전체 삭제
                   </button>
                 )}
                 <button
                   onClick={() => setShowAddForm(!showAddForm)}
-                  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
+                  className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-blue-500 text-white rounded-md md:rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
                   disabled={!isOnline}
                 >
                   <Plus size={20} className="mr-2" />
