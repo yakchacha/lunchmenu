@@ -570,27 +570,24 @@ const LunchRoulette = () => {
                 </button>
               </div>
             ) : (
-              <>
-                <RouletteWheel />
+              
+                <>
+                  <RouletteWheel />
 
-                <div className="text-center mb-6">
-                  <button
-                    onClick={spinRoulette}
-                    disabled={isSpinning}
-                    className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${
-                      isSpinning
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"
-                    }`}
-                  >
-                    {isSpinning ? (
-                      <>
-                        <RotateCcw
-                          className="inline-block mr-2 animate-spin"
-                          size={20}
-                        />
-                        돌리는 중...
-                      </>
+                  <div className="text-center mb-6">
+                    <button
+                      onClick={spinRoulette}
+                      disabled={isSpinning}
+                      className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${isSpinning ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"}`}
+                    >
+                      {isSpinning ? (
+                        <>
+                          <RotateCcw
+                            className="inline-block mr-2 animate-spin"
+                            size={20}
+                          />
+                          돌리는 중...
+                        </>
                     ) : (
                       "🎲 룰렛 돌리기"
                     )}
