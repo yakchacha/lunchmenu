@@ -667,7 +667,11 @@ const LunchRoulette = () => {
                     disabled={!isOnline}
                   >
                     <X size={16} className="mr-2" />
-                    전체 삭제
+                    <span className="hidden md:inline">전체 삭제</span>
+                    <span className="md:hidden flex flex-col text-center leading-tight">
+                      <span>전체</span>
+                      <span>삭제</span>
+                    </span>
                   </button>
                 )}
                 <button
@@ -675,8 +679,12 @@ const LunchRoulette = () => {
                   className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-blue-500 text-white rounded-md md:rounded-lg hover:bg-blue-600 transition-colors"
                   disabled={!isOnline}
                 >
-                  <Plus size={20} className="mr-2" />
-                  팀원 추가
+                  <Plus size={16} className="mr-2" />
+                    <span className="hidden md:inline">팀원 추가</span>
+                    <span className="md:hidden flex flex-col text-center leading-tight">
+                      <span>팀원</span>
+                      <span>추가</span>
+                    </span>
                 </button>
               </div>
             </div>
@@ -818,7 +826,11 @@ const LunchRoulette = () => {
                     disabled={!isOnline}
                   >
                     <X size={16} className="mr-2" />
-                    전체 삭제
+                    <span className="hidden md:inline">전체 삭제</span>
+                    <span className="md:hidden flex flex-col text-center leading-tight">
+                      <span>전체</span>
+                      <span>삭제</span>
+                    </span>
                   </button>
                 )}
                 <button
@@ -826,8 +838,12 @@ const LunchRoulette = () => {
                   className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-blue-500 text-white rounded-md md:rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
                   disabled={!isOnline}
                 >
-                  <Plus size={20} className="mr-2" />
-                  맛집 추가
+                  <Plus size={16} className="mr-2" />
+                    <span className="hidden md:inline">맛집 추가</span>
+                    <span className="md:hidden flex flex-col text-center leading-tight">
+                      <span>맛집</span>
+                      <span>추가</span>
+                    </span>
                 </button>
               </div>
             </div>
@@ -966,7 +982,7 @@ const LunchRoulette = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-2 justify-center md:justify-start">
                         <button
                           onClick={() => voteForRestaurant(restaurant.id)}
                           className="px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
@@ -1142,7 +1158,7 @@ const LunchRoulette = () => {
                           </span>
                           <span className="flex items-center">
                             <MessageSquare size={14} className="mr-1" />
-                            리뷰 {restaurant.reviews.length}개
+                            {restaurant.reviews.length}개
                           </span>
                         </div>
                       </div>
