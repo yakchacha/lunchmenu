@@ -570,27 +570,85 @@ const LunchRoulette = () => {
                 </button>
               </div>
             ) : (
-              <>
-                <RouletteWheel />
+              
+                <>
+                  <RouletteWheel />
 
-                <div className="text-center mb-6">
-                  <button
-                    onClick={spinRoulette}
-                    disabled={isSpinning}
-                    className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${
-                      isSpinning
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"
-                    }`}
-                  >
-                    {isSpinning ? (
-                      <>
-                        <RotateCcw
-                          className="inline-block mr-2 animate-spin"
-                          size={20}
-                        />
-                        돌리는 중...
-                      </>
+                  <div className="text-center mb-6">
+                    <button
+                      onClick={spinRoulette}
+                      disabled={isSpinning}
+                      className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${isSpinning ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"}`}
+                    >
+                      {isSpinning ? (
+                        <>
+                          <RotateCcw
+                            className="inline-block mr-2 animate-spin"
+                            size={20}
+                          />
+                          돌리는 중...
+                        </>
+                      ) : (
+                        "🎲 룰렛 돌리기"
+                      )}
+                    </button>
+                  </div>
+
+                  {selectedRestaurant && !isSpinning && (
+                    <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
+                      <div className="text-center">
+                        <h3 className="text-2xl font-bold text-green-700 mb-2">
+                          오늘의 점심 메뉴
+                        </h3>
+                        <div className="bg-white rounded-lg p-4 shadow-md">
+                          <h4 className="text-xl font-bold text-gray-800 mb-2">
+                            {selectedRestaurant.name}
+                          </h4>
+                          <div className="flex justify-center items-center space-x-4 text-sm text-gray-600">
+                            <span className="bg-blue-100 px-3 py-1 rounded-full">
+                              {selectedRestaurant.category}
+                            </span>
+                            <span className="flex items-center">
+                              <MapPin size={16} className="mr-1" />
+                              {selectedRestaurant.distance}
+                            </span>
+                            <span className="flex items-center">
+                              <Star size={16} className="mr-1 text-yellow-500" />
+                              {selectedRestaurant.rating}
+                            </span>
+                            {selectedRestaurant.naverMapUrl && (
+                              <a
+                                href={selectedRestaurant.naverMapUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center text-blue-500 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-full"
+                              >
+                                <MapPin size={16} className="mr-1" />
+                                네이버지도
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-center space-x-3 mt-4">
+                        <button
+                          onClick={() => voteForRestaurant(selectedRestaurant.id)}
+                          className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        >
+                          👍 개추
+                        </button>
+                        <button
+                          onClick={spinRoulette}
+                          className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          👎 한 번 더
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+
                     ) : (
                       "🎲 룰렛 돌리기"
                     )}
