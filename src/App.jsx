@@ -663,7 +663,7 @@ const LunchRoulette = () => {
                 {coffeeMembers.length > 0 && (
                   <button
                     onClick={clearAllMembers}
-                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-red-500 text-white rounded-md md:rounded-lg hover:bg-red-600 transition-colors"
                     disabled={!isOnline}
                   >
                     <X size={16} className="mr-2" />
@@ -672,7 +672,7 @@ const LunchRoulette = () => {
                 )}
                 <button
                   onClick={() => setShowAddMemberForm(!showAddMemberForm)}
-                  className="flex items-center px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+                  className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-blue-500 text-white rounded-md md:rounded-lg hover:bg-blue-600 transition-colors"
                   disabled={!isOnline}
                 >
                   <Plus size={20} className="mr-2" />
