@@ -657,7 +657,7 @@ const LunchRoulette = () => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center">
                 <Coffee className="mr-3 text-teal-500" />
-                커피 내기 룰렛
+                커피 내기
               </h2>
               <div className="flex space-x-2">
                 {coffeeMembers.length > 0 && (
@@ -780,7 +780,7 @@ const LunchRoulette = () => {
                         돌리는 중...
                       </>
                     ) : (
-                      "☕ 커피 내기 시작!"
+                      "🎲 룰렛 돌리기"
                     )}
                   </button>
                 </div>
