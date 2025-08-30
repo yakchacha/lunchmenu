@@ -11,7 +11,7 @@ import {
   Wifi,
   WifiOff,
   X,
-  UtensilsCrossed,
+  Utensils,
 } from "lucide-react";
 
 // Firebase imports 추가
@@ -818,7 +818,7 @@ const LunchRoulette = () => {
         {activeTab === "restaurants" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex justify-between items-center mb-6">
-              <UtensilsCrossed className="mr-3 text-teal-500" />
+              <Utensils className="mr-3 text-teal-500" />
               <h2 className="text-2xl font-bold text-gray-800">맛집 목록</h2>
               <div className="flex space-x-2">
                 {restaurants.length > 0 && (
