@@ -612,7 +612,7 @@ const LunchRoulette = () => {
                           </span>
                             {selectedRestaurant.naverMapUrl && (
                               <a
-                                href={selectedRestaurant.naverMapUrl}
+                                href={selectedRestaurant.naverMapUrl},
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center text-blue-500 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-full"
