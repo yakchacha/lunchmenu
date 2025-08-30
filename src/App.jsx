@@ -637,9 +637,8 @@ const LunchRoulette = () => {
                 </button>
               </div>
             ) : (
-              
-                <>
-                  <RouletteWheel />
+              <div>
+                <RouletteWheel />
 
                   <div className="text-center mb-6">
                     <button
@@ -660,7 +659,7 @@ const LunchRoulette = () => {
                     )}
                   </button>
                 </div>
-
+                  
                 {selectedRestaurant && !isSpinning && (
                   <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
                     <div className="text-center">
