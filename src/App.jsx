@@ -40,6 +40,7 @@ const LunchRoulette = () => {
     name: "",
     category: "",
     distance: "",
+    naverMapUrl: "",
   });
   const [newMember, setNewMember] = useState("");
   const [newReview, setNewReview] = useState({
@@ -155,7 +156,7 @@ const LunchRoulette = () => {
         // Firebase에 실제 저장
         await addDoc(collection(db, 'restaurants'), restaurant);
         
-        setNewRestaurant({ name: "", category: "", distance: "" });
+        setNewRestaurant({ name: "", category: "", distance: "", naverMapUrl: "" });
         setShowAddForm(false);
         
       } catch (error) {
@@ -609,6 +610,18 @@ const LunchRoulette = () => {
                             <Star size={16} className="mr-1 text-yellow-500" />
                             {selectedRestaurant.rating}
                           </span>
+                            {selectedRestaurant.naverMapUrl && (
+                              
+                                href={selectedRestaurant.naverMapUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center text-blue-500 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-full"
+                              >
+                                <MapPin size={16} className="mr-1" />
+                                네이버지도
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="flex justify-center space-x-3 mt-4">
@@ -856,6 +869,18 @@ const LunchRoulette = () => {
                     }
                     className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <input
+                    type="url"
+                    placeholder="네이버지도 링크 (선택사항)"
+                    value={newRestaurant.naverMapUrl}
+                    onChange={(e) =>
+                      setNewRestaurant({
+                        ...newRestaurant,
+                        naverMapUrl: e.target.value,
+                      })
+                    }
+                    className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div className="flex justify-end mt-4 space-x-2">
                   <button
@@ -917,7 +942,19 @@ const LunchRoulette = () => {
                           <span className="flex items-center">
                             <Users size={16} className="mr-1" />
                             {restaurant.votes}표
-                          </span>
+                          </span>                        
+                            {restaurant.naverMapUrl && (
+                              
+                                href={restaurant.naverMapUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center text-blue-500 hover:text-blue-700 transition-colors"
+                              >
+                                <MapPin size={14} className="mr-1" />
+                                지도보기
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="flex space-x-2">
