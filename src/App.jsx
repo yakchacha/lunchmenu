@@ -1226,7 +1226,7 @@ const LunchRoulette = () => {
             </div>
         
             {/* 커피 쏘신 분 랭킹 */}
-            <h3 className="text-lg font-bold text-gray-700 mb-4">커피 영신 분</h3>
+            <h3 className="text-lg font-bold text-gray-700 mb-4">커피 쏘신 분</h3>
             <div className="space-y-4">
               {(() => {
                 // 당첨 횟수 계산
@@ -1284,7 +1284,7 @@ const LunchRoulette = () => {
      </div>
    </div>
  );
-};
+}
 
 export default LunchRoulette;
             
