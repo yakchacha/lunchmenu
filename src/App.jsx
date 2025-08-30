@@ -671,49 +671,6 @@ const LunchRoulette = () => {
                 )}
               </div>
             )}
-                  
-                {selectedRestaurant && !isSpinning && (
-                  <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
-                    <div className="text-center">
-                      <h3 className="text-2xl font-bold text-green-700 mb-2">
-                        오늘의 점심 메뉴
-                      </h3>
-                      <div className="bg-white rounded-lg p-4 shadow-md">
-                        <h4 className="text-xl font-bold text-gray-800 mb-2">
-                          {selectedRestaurant.name}
-                        </h4>
-                        <div className="flex justify-center items-center space-x-4 text-sm text-gray-600">
-                          <span className="bg-blue-100 px-3 py-1 rounded-full">
-                            {selectedRestaurant.category}
-                          </span>
-                          <span className="flex items-center">
-                            <MapPin size={16} className="mr-1" />
-                            {selectedRestaurant.distance}
-                          </span>
-                          <span className="flex items-center">
-                            <Star size={16} className="mr-1 text-yellow-500" />
-                            {selectedRestaurant.rating}
-                          </span>
-                            {selectedRestaurant.naverMapUrl && (
-                              <a
-                                href={selectedRestaurant.naverMapUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center text-blue-500 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-full"
-                              >
-                                <MapPin size={16} className="mr-1" />
-                                네이버지도
-                              </a>
-                            )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
 
         {activeTab === "coffee" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
