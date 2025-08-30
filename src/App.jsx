@@ -962,6 +962,7 @@ const LunchRoulette = () => {
                             </div>
                           )}
                         </div>
+                      </div>
                       <div className="flex space-x-2">
                         <button
                           onClick={() => voteForRestaurant(restaurant.id)}
