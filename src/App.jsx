@@ -1,23 +1,3 @@
-App (3).jsx
-1310줄
-
-txt
-
-Syntax error: Unexpected token. Did you mean {'}'} or &rbrace;? (1291:undefined) 오류가 있어.
-그리고 566줄의   return ( 가 Ctrl Shift ₩ 했을 때 짝이 없어
-
-Looking at your code, I can identify the syntax issues:
-
-Line 133-143: There's a duplicate section that's outside the useEffect but trying to return cleanup functions. This is causing the syntax error.
-Line 566: The return ( statement is missing its closing parenthesis and brace.
-Let me fix these issues:
-
-Fixed LunchRoulette Component
-코드 
-
-
-
-
 import React, { useState, useEffect } from "react";
 import {
   MapPin,
