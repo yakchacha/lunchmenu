@@ -1252,7 +1252,6 @@ const LunchRoulette = () => {
      </div>
    </div>
  );
-}
+};
 
 export default LunchRoulette;
-            
