@@ -280,39 +280,39 @@ const LunchRoulette = () => {
   };
 
   const deleteReview = async (restaurantId, reviewIndex) => {
-  if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
-    if (!isOnline) {
-      alert('오프라인 상태입니다.');
-      return;
+    if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
+      if (!isOnline) {
+        alert('오프라인 상태입니다.');
+        return;
+      }
+  
+      setIsSyncing(true);
+      try {
+        const restaurant = restaurants.find(r => r.id === restaurantId);
+        const updatedReviews = restaurant.reviews.filter((_, index) => index !== reviewIndex);
+        const avgRating = updatedReviews.length > 0 
+          ? updatedReviews.reduce((sum, review) => sum + review.rating, 0) / updatedReviews.length
+          : 0;
+        
+        // Firebase 업데이트
+        await updateDoc(doc(db, 'restaurants', restaurantId), {
+          reviews: updatedReviews,
+          rating: Math.round(avgRating * 10) / 10,
+        });
+        
+      } catch (error) {
+        console.error('리뷰 삭제 실패:', error);
+        alert('삭제에 실패했습니다.');
+      } finally {
+        setIsSyncing(false);
+      }
     }
-
-    setIsSyncing(true);
-    try {
-      const restaurant = restaurants.find(r => r.id === restaurantId);
-      const updatedReviews = restaurant.reviews.filter((_, index) => index !== reviewIndex);
-      const avgRating = updatedReviews.length > 0 
-        ? updatedReviews.reduce((sum, review) => sum + review.rating, 0) / updatedReviews.length
-        : 0;
+  };
       
-      // Firebase 업데이트
-      await updateDoc(doc(db, 'restaurants', restaurantId), {
-        reviews: updatedReviews,
-        rating: Math.round(avgRating * 10) / 10,
-      });
-      
-    } catch (error) {
-      console.error('리뷰 삭제 실패:', error);
-      alert('삭제에 실패했습니다.');
-    } finally {
-      setIsSyncing(false);
+      setRestaurants(updatedRestaurants);
+      await saveToFirebase('restaurants', updatedRestaurants);
     }
-  }
-};
-    
-    setRestaurants(updatedRestaurants);
-    await saveToFirebase('restaurants', updatedRestaurants);
-  }
-};
+  };
 
   // 맛집 삭제 함수 (Firebase 연동)
   const deleteRestaurant = async (restaurantId) => {
