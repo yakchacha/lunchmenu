@@ -495,7 +495,7 @@ const LunchRoulette = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-4 md:p-6">
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-8">
           <div className="mb-4 relative">
@@ -533,19 +533,19 @@ const LunchRoulette = () => {
         </header>
 
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-lg shadow-lg p-2 flex flex-wrap">
+          <div className="bg-white rounded-lg shadow-lg p-2 flex flex-wrap justify-center max-w-full">
             {["roulette", "coffee", "restaurants", "rankings"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-md font-medium transition-colors m-1 ${
+                className={`px-3 py-2 rounded-md font-medium transition-colors m-1 text-sm md:text-base md:px-4 ${
                   activeTab === tab
                     ? "bg-blue-500 text-white"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 {tab === "roulette" && "🎯 점심 룰렛"}
-                {tab === "coffee" && "☕ 커피 내기"}
+                {tab === "coffee" && "☕ 커피내기"}
                 {tab === "restaurants" && "🍽️ 맛집 목록"}
                 {tab === "rankings" && "🏆 인기 순위"}
               </button>
