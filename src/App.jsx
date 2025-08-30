@@ -85,20 +85,20 @@ const LunchRoulette = () => {
   
     // 팀 멤버 데이터 실시간 동기화
     const unsubscribeMembers = onSnapshot(
-      collection(db, 'team-members'), 
+      collection(db, 'members'), 
       (snapshot) => {
         const memberList = snapshot.docs.map(doc => ({
           id: doc.id,
-          ...doc.data()
+          name: doc.data().name
         }));
-        setTeamMembers(memberList);
+        setCoffeeMembers(memberList.map(member => member.name));
       },
       (error) => {
         console.error('멤버 동기화 오류:', error);
       }
     );
   
-    // 🔽 6번: 커피 당첨 기록 실시간 동기화 추가
+    // 커피 당첨 기록 실시간 동기화
     const unsubscribeCoffeeWins = onSnapshot(
       collection(db, 'coffee-wins'), 
       (snapshot) => {
@@ -113,10 +113,19 @@ const LunchRoulette = () => {
       }
     );
   
+    // 온라인/오프라인 상태 감지
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
     return () => {
       unsubscribeRestaurants();
       unsubscribeMembers();
-      unsubscribeCoffeeWins(); // 🔽 cleanup에 추가
+      unsubscribeCoffeeWins();
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, []);
 
