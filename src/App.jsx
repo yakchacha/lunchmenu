@@ -127,6 +127,21 @@ const LunchRoulette = () => {
       }
     );
 
+    // 커피 당첨 기록 실시간 동기화
+    const unsubscribeCoffeeWins = onSnapshot(
+      collection(db, 'coffee-wins'), 
+      (snapshot) => {
+        const winsList = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setCoffeeWinHistory(winsList);
+      },
+      (error) => {
+        console.error('커피 당첨 기록 동기화 오류:', error);
+      }
+    );
+
     // 온라인/오프라인 상태 감지
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
@@ -137,6 +152,7 @@ const LunchRoulette = () => {
     return () => {
       unsubscribeRestaurants();
       unsubscribeMembers();
+      unsubscribeCoffeeWins();
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
