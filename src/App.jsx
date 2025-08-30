@@ -12,6 +12,7 @@ import {
   WifiOff,
   X,
   Utensils,
+  Target,
 } from "lucide-react";
 
 // Firebase imports 추가
@@ -557,6 +558,18 @@ const LunchRoulette = () => {
 
         {activeTab === "roulette" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center">
+                <Target className="mr-2 text-blue-500" />
+                <h2 className="text-2xl font-bold text-gray-800">점심 룰렛</h2>
+              </div>
+            </div>
+            
+            <div className="text-center text-gray-600 mb-8">
+              <p>오늘 점심 뭐 먹을지 모르겠다고요?</p>
+              <p>맛집 목록에 있는 맛집들 중 하나를 추첨합니다.</p>
+            </div>
+            
             {restaurants.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🍽️</div>
