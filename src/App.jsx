@@ -925,31 +925,32 @@ const LunchRoulette = () => {
                 {restaurants.map((restaurant) => (
                   <div
                     key={restaurant.id}
-                    className="border rounded-lg p-6 hover:shadow-md transition-shadow"
+                    className="border rounded-lg p-4 md:p-6 hover:shadow-md transition-shadow overflow-hidden"
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4 space-y-4 md:space-y-0">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-xl font-bold text-gray-800 mb-2 break-words">
                           {restaurant.name}
                         </h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                          <span className="bg-blue-100 px-3 py-1 rounded-full">
+                        <div className="grid grid-cols-2 gap-2 md:flex md:items-center md:space-x-4 md:gap-0 text-sm text-gray-600">
+                          <span className="bg-blue-100 px-3 py-1 rounded-full text-center">
                             {restaurant.category}
                           </span>
-                          <span className="flex items-center">
+                          <span className="flex items-center justify-center md:justify-start">
                             <MapPin size={16} className="mr-1" />
                             {restaurant.distance}
                           </span>
-                          <span className="flex items-center">
+                          <span className="flex items-center justify-center md:justify-start">
                             <Star size={16} className="mr-1 text-yellow-500" />
                             {restaurant.rating}
                           </span>
-                          <span className="flex items-center">
+                          <span className="flex items-center justify-center md:justify-start">
                             <Users size={16} className="mr-1" />
                             {restaurant.votes}표
-                          </span>                        
-                            {restaurant.naverMapUrl && (
-                              <a
+                          </span>
+                          {restaurant.naverMapUrl && (
+                            <div className="col-span-2 flex justify-center md:col-span-1">
+                              
                                 href={restaurant.naverMapUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -958,8 +959,8 @@ const LunchRoulette = () => {
                                 <MapPin size={14} className="mr-1" />
                                 지도보기
                               </a>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
                       <div className="flex space-x-2">
                         <button
