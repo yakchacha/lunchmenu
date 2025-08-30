@@ -65,36 +65,6 @@ const LunchRoulette = () => {
 
   const [filterCategory, setFilterCategory] = useState("");
 
-  const [coffeeWinHistory, setCoffeeWinHistory] = useState([]);
-
-  const confirmCoffeeWinner = async () => {
-    if (!isOnline) {
-      alert('오프라인 상태입니다.');
-      return;
-    }
-
-  setIsSyncing(true);
-  try {
-    const winRecord = {
-      winners: selectedCoffeeMembers,
-      date: new Date().toISOString(),
-      confirmed: true
-    };
-    
-    // Firebase에 당첨 기록 저장
-    await addDoc(collection(db, 'coffee-wins'), winRecord);
-    
-    // 로컬 상태 업데이트
-    setCoffeeWinHistory(prev => [...prev, winRecord]);
-    
-  } catch (error) {
-    console.error('당첨 확정 실패:', error);
-    alert('확정에 실패했습니다.');
-  } finally {
-    setIsSyncing(false);
-  }
-};
-
   // Firebase 실시간 동기화 및 초기 설정
   useEffect(() => {
     // 맛집 데이터 실시간 동기화
@@ -127,21 +97,6 @@ const LunchRoulette = () => {
       }
     );
 
-    // 커피 당첨 기록 실시간 동기화
-    const unsubscribeCoffeeWins = onSnapshot(
-      collection(db, 'coffee-wins'), 
-      (snapshot) => {
-        const winsList = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setCoffeeWinHistory(winsList);
-      },
-      (error) => {
-        console.error('커피 당첨 기록 동기화 오류:', error);
-      }
-    );
-
     // 온라인/오프라인 상태 감지
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
@@ -152,7 +107,6 @@ const LunchRoulette = () => {
     return () => {
       unsubscribeRestaurants();
       unsubscribeMembers();
-      unsubscribeCoffeeWins();
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
@@ -360,6 +314,7 @@ const LunchRoulette = () => {
     }
   };
       
+
   // 맛집 삭제 함수 (Firebase 연동)
   const deleteRestaurant = async (restaurantId) => {
     if (confirm('정말로 이 맛집을 삭제하시겠습니까?')) {
@@ -604,9 +559,23 @@ const LunchRoulette = () => {
         </div>
 
         {activeTab === "roulette" && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">점심 룰렛</h2>
-        
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center">
+                <Target className="mr-2 text-blue-500" />
+                <h2 className="text-2xl font-bold text-gray-800">점심 룰렛</h2>
+              </div>
+            </div>
+            
+            <div className="text-center text-gray-600 text-sm mb-8">
+              <p>오늘 점심 뭐 먹음?</p>
+              <p>맛집 목록에 있는 맛집들 중 하나를 추첨합니다.</p>
+            </div>
+
+            <div className="flex justify-center mb-8">
+              <div className="border-t-2 border-gray-200 w-24"></div>
+            </div>
+            
             {restaurants.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🍽️</div>
@@ -622,39 +591,69 @@ const LunchRoulette = () => {
                 </button>
               </div>
             ) : (
-              <div>
-                <RouletteWheel />
-        
-                <div className="text-center mb-6">
-                  <button
-                    onClick={spinRoulette}
-                    disabled={isSpinning}
-                    className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${
-                      isSpinning
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"
-                    }`}
-                  >
-                    {isSpinning ? (
-                      <>
-                        <RotateCcw
-                          className="inline-block mr-2 animate-spin"
-                          size={20}
-                        />
-                        돌리는 중...
-                      </>
+              
+                <>
+                  <RouletteWheel />
+
+                  <div className="text-center mb-6">
+                    <button
+                      onClick={spinRoulette}
+                      disabled={isSpinning}
+                      className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${isSpinning ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"}`}
+                    >
+                      {isSpinning ? (
+                        <>
+                          <RotateCcw
+                            className="inline-block mr-2 animate-spin"
+                            size={20}
+                          />
+                          돌리는 중...
+                        </>
                     ) : (
                       "🎲 룰렛 돌리기"
                     )}
                   </button>
                 </div>
-        
+
                 {selectedRestaurant && !isSpinning && (
                   <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border-2 border-green-200">
-                    {/* 선택된 식당 정보 */}
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold text-green-700 mb-2">
+                        오늘의 점심 메뉴
+                      </h3>
+                      <div className="bg-white rounded-lg p-4 shadow-md">
+                        <h4 className="text-xl font-bold text-gray-800 mb-2">
+                          {selectedRestaurant.name}
+                        </h4>
+                        <div className="flex justify-center items-center space-x-4 text-sm text-gray-600">
+                          <span className="bg-blue-100 px-3 py-1 rounded-full">
+                            {selectedRestaurant.category}
+                          </span>
+                          <span className="flex items-center">
+                            <MapPin size={16} className="mr-1" />
+                            {selectedRestaurant.distance}
+                          </span>
+                          <span className="flex items-center">
+                            <Star size={16} className="mr-1 text-yellow-500" />
+                            {selectedRestaurant.rating}
+                          </span>
+                            {selectedRestaurant.naverMapUrl && (
+                              <a
+                                href={selectedRestaurant.naverMapUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center text-blue-500 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-full"
+                              >
+                                <MapPin size={16} className="mr-1" />
+                                네이버지도
+                              </a>
+                            )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
-              </div>
+              </>
             )}
           </div>
         )}
@@ -796,7 +795,7 @@ const LunchRoulette = () => {
                   <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-6 border-2 border-teal-200">
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-teal-700 mb-2">
-                        오늘 커피 쏘신 분은
+                        오늘 커피 쏘시는 분은
                       </h3>
                       <div className="bg-white rounded-lg p-4 shadow-md">
                         <div className="flex flex-wrap justify-center gap-2">
@@ -813,13 +812,6 @@ const LunchRoulette = () => {
                           모두들 감사하십시오
                         </p>
                       </div>
-                      <button
-                        onClick={confirmCoffeeWinner}
-                        disabled={!isOnline || isSyncing}
-                        className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:bg-gray-400"
-                      >
-                        {isSyncing ? '확정 중...' : '확정'}
-                      </button>
                     </div>
                   </div>
                 )}
@@ -1138,90 +1130,65 @@ const LunchRoulette = () => {
               <Trophy className="mr-3 text-yellow-500" />
               인기 랭킹
             </h2>
-            
-            {/* 맛집 랭킹 */}
-            <h3 className="text-lg font-bold text-gray-700 mb-4">맛집 랭킹</h3>
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4">
               {restaurants
                 .sort((a, b) => b.votes - a.votes)
-                .slice(0, 5)
                 .map((restaurant, index) => (
-                  <div key={restaurant.id} className={`flex items-center justify-between p-4 rounded-lg ${
-                    index === 0 ? "bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200" :
-                    index === 1 ? "bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-gray-200" :
-                    index === 2 ? "bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200" :
-                    "bg-gray-50"
-                  }`}>
+                  <div
+                    key={restaurant.id}
+                    className={`flex items-center justify-between p-4 rounded-lg ${
+                      index === 0
+                        ? "bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200"
+                        : index === 1
+                        ? "bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-gray-200"
+                        : index === 2
+                        ? "bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200"
+                        : "bg-gray-50"
+                    }`}
+                  >
                     <div className="flex items-center space-x-4">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                        index === 0 ? "bg-yellow-500" :
-                        index === 1 ? "bg-gray-400" :
-                        index === 2 ? "bg-orange-500" :
-                        "bg-gray-300"
-                      }`}>
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+                          index === 0
+                            ? "bg-yellow-500"
+                            : index === 1
+                            ? "bg-gray-400"
+                            : index === 2
+                            ? "bg-orange-500"
+                            : "bg-gray-300"
+                        }`}
+                      >
                         {index + 1}
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-800">{restaurant.name}</h4>
+                        <h3 className="font-bold text-gray-800">
+                          {restaurant.name}
+                        </h3>
                         <div className="flex items-center space-x-3 text-sm text-gray-600">
                           <span>{restaurant.category}</span>
                           <span className="flex items-center">
                             <Star size={14} className="mr-1 text-yellow-500" />
                             {restaurant.rating}
                           </span>
+                          <span className="flex items-center">
+                            <MessageSquare size={14} className="mr-1" />
+                            {restaurant.reviews.length}개
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">{restaurant.votes}</div>
-                      <div className="text-sm text-gray-500">추천</div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-        
-            {/* 커피 쏘신 분 랭킹 */}
-            <h3 className="text-lg font-bold text-gray-700 mb-4">커피 쏘신 분</h3>
-            <div className="space-y-4">
-              {(() => {
-                // 당첨 횟수 계산
-                const winCounts = {};
-                coffeeWinHistory.forEach(record => {
-                  record.winners.forEach(winner => {
-                    winCounts[winner] = (winCounts[winner] || 0) + 1;
-                  });
-                });
-                
-                // 상위 3명 추출
-                return Object.entries(winCounts)
-                  .sort(([,a], [,b]) => b - a)
-                  .slice(0, 3)
-                  .map(([name, count], index) => (
-                    <div key={name} className={`flex items-center justify-between p-4 rounded-lg ${
-                      index === 0 ? "bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200" :
-                      index === 1 ? "bg-gradient-to-r from-gray-50 to-orange-50 border-2 border-gray-200" :
-                      "bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200"
-                    }`}>
-                      <div className="flex items-center space-x-4">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                          index === 0 ? "bg-orange-500" :
-                          index === 1 ? "bg-gray-400" :
-                          "bg-yellow-500"
-                        }`}>
-                          {index + 1}
-                        </div>
-                        <h4 className="font-bold text-gray-800">{name}</h4>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-orange-600">{count}</div>
-                        <div className="text-sm text-gray-500">회</div>
-                      </div>
-                    </div>
-                  ));
-              })()}
-            </div>
-          </div>
-        )}
+                   <div className="text-right">
+                     <div className="text-2xl font-bold text-blue-600">
+                       {restaurant.votes}
+                     </div>
+                     <div className="text-sm text-gray-500">추천</div>
+                   </div>
+                 </div>
+               ))}
+           </div>
+         </div>
+       )}
+     </div>
      
      {/* 제작자 정보 */}
      <div className="max-w-4xl mx-auto mt-8 text-center text-gray-500 text-sm">
@@ -1242,3 +1209,4 @@ const LunchRoulette = () => {
 };
 
 export default LunchRoulette;
+            
