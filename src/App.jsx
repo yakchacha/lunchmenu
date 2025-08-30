@@ -63,6 +63,8 @@ const LunchRoulette = () => {
     "기타",
   ];
 
+  const [filterCategory, setFilterCategory] = useState("");
+
   // Firebase 실시간 동기화 및 초기 설정
   useEffect(() => {
     // 맛집 데이터 실시간 동기화
@@ -648,20 +650,6 @@ const LunchRoulette = () => {
                             )}
                         </div>
                       </div>
-                      <div className="flex justify-center space-x-3 mt-4">
-                        <button
-                          onClick={() => voteForRestaurant(selectedRestaurant.id)}
-                          className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                        >
-                          👍 개추
-                        </button>
-                        <button
-                          onClick={spinRoulette}
-                          className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                        >
-                          👎 한 번 더
-                        </button>
-                      </div>
                     </div>
                   </div>
                 )}
@@ -855,6 +843,23 @@ const LunchRoulette = () => {
               </div>
             </div>
 
+            {/* 카테고리 필터 */}
+            <div className="mb-6">
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium text-gray-700">카테고리별 보기:</span>
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                >
+                  <option value="">전체</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             {showAddForm && (
               <div className="bg-gray-50 rounded-lg p-6 mb-6">
                 <h3 className="text-lg font-semibold mb-4">새 맛집 등록</h3>
@@ -948,7 +953,9 @@ const LunchRoulette = () => {
               </div>
             ) : (
               <div className="grid gap-6">
-                {restaurants.map((restaurant) => (
+                {restaurants
+                  .filter(restaurant => filterCategory === "" || restaurant.category === filterCategory)
+                  .map((restaurant) => (
                   <div
                     key={restaurant.id}
                     className="border rounded-lg p-4 md:p-6 hover:shadow-md transition-shadow overflow-hidden"
