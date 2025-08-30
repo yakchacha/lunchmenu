@@ -571,7 +571,7 @@ const LunchRoulette = () => {
             </div>
 
             <div className="flex justify-center mb-8">
-              <div className="border-t border-gray-200 w-24"></div>
+              <div className="border-t-3 border-gray-200 w-24"></div>
             </div>
             
             {restaurants.length === 0 ? (
@@ -840,20 +840,6 @@ const LunchRoulette = () => {
                 <h2 className="text-2xl font-bold text-gray-800">맛집 목록</h2>
               </div>
               <div className="flex space-x-2">
-                {restaurants.length > 0 && (
-                  <button
-                    onClick={clearAllData}
-                    className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-red-500 text-white rounded-md md:rounded-lg hover:bg-red-600 transition-colors disabled:bg-gray-400"
-                    disabled={!isOnline}
-                  >
-                    <X size={16} className="mr-2" />
-                    <span className="hidden md:inline">전체 삭제</span>
-                    <span className="md:hidden flex flex-col text-center leading-tight">
-                      <span>전체</span>
-                      <span>삭제</span>
-                    </span>
-                  </button>
-                )}
                 <button
                   onClick={() => setShowAddForm(!showAddForm)}
                   className="flex items-center px-2 py-1 text-xs md:px-4 md:py-2 md:text-sm bg-blue-500 text-white rounded-md md:rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
