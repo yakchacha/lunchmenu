@@ -639,7 +639,7 @@ const LunchRoulette = () => {
                       </button>
                     </div>
                   </div>
-                ))}
+                )}
 
         {activeTab === "coffee" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
