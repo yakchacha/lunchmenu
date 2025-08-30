@@ -309,10 +309,6 @@ const LunchRoulette = () => {
     }
   };
       
-      setRestaurants(updatedRestaurants);
-      await saveToFirebase('restaurants', updatedRestaurants);
-    }
-  };
 
   // 맛집 삭제 함수 (Firebase 연동)
   const deleteRestaurant = async (restaurantId) => {
