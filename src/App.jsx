@@ -278,6 +278,28 @@ const LunchRoulette = () => {
     }
   };
 
+  const deleteReview = async (restaurantId, reviewIndex) => {
+  if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
+    const updatedRestaurants = restaurants.map((restaurant) => {
+      if (restaurant.id === restaurantId) {
+        const updatedReviews = restaurant.reviews.filter((_, index) => index !== reviewIndex);
+        const avgRating = updatedReviews.length > 0 
+          ? updatedReviews.reduce((sum, review) => sum + review.rating, 0) / updatedReviews.length
+          : 0;
+        return {
+          ...restaurant,
+          reviews: updatedReviews,
+          rating: Math.round(avgRating * 10) / 10,
+        };
+      }
+      return restaurant;
+    });
+    
+    setRestaurants(updatedRestaurants);
+    await saveToFirebase('restaurants', updatedRestaurants);
+  }
+};
+
   // 맛집 삭제 함수 (Firebase 연동)
   const deleteRestaurant = async (restaurantId) => {
     if (confirm('정말로 이 맛집을 삭제하시겠습니까?')) {
@@ -921,8 +943,15 @@ const LunchRoulette = () => {
                       </h4>
 
                       {restaurant.reviews.map((review, index) => (
-                        <div key={index} className="bg-gray-50 rounded-md p-3">
-                          <div className="flex justify-between items-start mb-1">
+                        <div key={index} className="bg-gray-50 rounded-md p-3 relative">
+                          <button
+                            onClick={() => deleteReview(restaurant.id, index)}
+                            className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors"
+                            disabled={!isOnline}
+                          >
+                            ×
+                          </button>
+                          <div className="flex justify-between items-start mb-1 pr-6">
                             <span className="font-medium text-gray-700">
                               {review.user}
                             </span>
