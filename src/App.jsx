@@ -627,7 +627,6 @@ const LunchRoulette = () => {
                                 네이버지도
                               </a>
                             )}
-                          </div>
                         </div>
                       </div>
                       <div className="flex justify-center space-x-3 mt-4">
