@@ -565,9 +565,13 @@ const LunchRoulette = () => {
               </div>
             </div>
             
-            <div className="text-center text-gray-600 mb-6">
+            <div className="text-center text-gray-600 text-sm mb-8">
               <p>오늘 점심 뭐 먹음?</p>
               <p>맛집 목록에 있는 맛집들 중 하나를 추첨합니다.</p>
+            </div>
+
+            <div className="flex justify-center mb-8">
+              <div className="border-t border-gray-200 w-24"></div>
             </div>
             
             {restaurants.length === 0 ? (
