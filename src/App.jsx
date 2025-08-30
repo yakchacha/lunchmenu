@@ -360,7 +360,6 @@ const LunchRoulette = () => {
     }
   };
       
-
   // 맛집 삭제 함수 (Firebase 연동)
   const deleteRestaurant = async (restaurantId) => {
     if (confirm('정말로 이 맛집을 삭제하시겠습니까?')) {
