@@ -644,8 +644,6 @@ const LunchRoulette = () => {
                         👎 한 번 더
                       </button>
                     </div>
-                  </div>
-                </div>
               )}
             </>
           )}
