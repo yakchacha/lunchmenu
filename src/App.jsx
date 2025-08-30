@@ -632,23 +632,25 @@ const LunchRoulette = () => {
                       </div>
                       <div className="flex justify-center space-x-3 mt-4">
                         <button
-                        onClick={() => voteForRestaurant(selectedRestaurant.id)}
-                        className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                      >
-                        👍 개추
-                      </button>
-                      <button
-                        onClick={spinRoulette}
-                        className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                      >
-                        👎 한 번 더
-                      </button>
+                          onClick={() => voteForRestaurant(selectedRestaurant.id)}
+                          className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        >
+                          👍 개추
+                        </button>
+                        <button
+                          onClick={spinRoulette}
+                          className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          👎 한 번 더
+                        </button>
+                      </div>
                     </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         {activeTab === "coffee" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
