@@ -119,21 +119,6 @@ const LunchRoulette = () => {
       unsubscribeCoffeeWins(); // 🔽 cleanup에 추가
     };
   }, []);
-  
-    // 멤버 데이터 실시간 동기화
-    const unsubscribeMembers = onSnapshot(
-      collection(db, 'members'), 
-      (snapshot) => {
-        const memberList = snapshot.docs.map(doc => ({
-          id: doc.id,
-          name: doc.data().name
-        }));
-        setCoffeeMembers(memberList.map(member => member.name));
-      },
-      (error) => {
-        console.error('멤버 동기화 오류:', error);
-      }
-    );
 
     // 온라인/오프라인 상태 감지
     const handleOnline = () => setIsOnline(true);
