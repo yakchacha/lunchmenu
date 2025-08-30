@@ -638,13 +638,8 @@ const LunchRoulette = () => {
                         👎 한 번 더
                       </button>
                     </div>
-                    </div>
                   </div>
                 )}
-              </>
-            )}
-          </div>
-        )}
 
         {activeTab === "coffee" && (
           <div className="bg-white rounded-xl shadow-lg p-8">
