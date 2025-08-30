@@ -944,7 +944,7 @@ const LunchRoulette = () => {
                             {restaurant.votes}표
                           </span>                        
                             {restaurant.naverMapUrl && (
-                              
+                              <a
                                 href={restaurant.naverMapUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
