@@ -129,21 +129,6 @@ const LunchRoulette = () => {
     };
   }, []);
 
-    // 온라인/오프라인 상태 감지
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      unsubscribeRestaurants();
-      unsubscribeMembers();
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
   const spinRoulette = () => {
     setIsSpinning(true);
     setSelectedRestaurant(null);
