@@ -1,3 +1,23 @@
+App (3).jsx
+1310줄
+
+txt
+
+Syntax error: Unexpected token. Did you mean {'}'} or &rbrace;? (1291:undefined) 오류가 있어.
+그리고 566줄의   return ( 가 Ctrl Shift ₩ 했을 때 짝이 없어
+
+Looking at your code, I can identify the syntax issues:
+
+Line 133-143: There's a duplicate section that's outside the useEffect but trying to return cleanup functions. This is causing the syntax error.
+Line 566: The return ( statement is missing its closing parenthesis and brace.
+Let me fix these issues:
+
+Fixed LunchRoulette Component
+코드 
+
+
+
+
 import React, { useState, useEffect } from "react";
 import {
   MapPin,
@@ -587,7 +607,7 @@ const LunchRoulette = () => {
             OGQ 점심 룰렛
           </h1>
           <p className="text-gray-600">
-            점메추도 커피 내기도 OGQ와 함께 한큐에 끝내자
+            점메추도 커피 내기도 OGQ와 함께 한번에 끝내자
           </p>
           {!isOnline && (
             <div className="mt-2 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2 inline-block">
@@ -655,24 +675,23 @@ const LunchRoulette = () => {
                 </button>
               </div>
             ) : (
-              
-                <>
-                  <RouletteWheel />
+              <>
+                <RouletteWheel />
 
-                  <div className="text-center mb-6">
-                    <button
-                      onClick={spinRoulette}
-                      disabled={isSpinning}
-                      className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${isSpinning ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"}`}
-                    >
-                      {isSpinning ? (
-                        <>
-                          <RotateCcw
-                            className="inline-block mr-2 animate-spin"
-                            size={20}
-                          />
-                          돌리는 중...
-                        </>
+                <div className="text-center mb-6">
+                  <button
+                    onClick={spinRoulette}
+                    disabled={isSpinning}
+                    className={`px-8 py-4 rounded-full font-bold text-white text-lg transition-all ${isSpinning ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105"}`}
+                  >
+                    {isSpinning ? (
+                      <>
+                        <RotateCcw
+                          className="inline-block mr-2 animate-spin"
+                          size={20}
+                        />
+                        돌리는 중...
+                      </>
                     ) : (
                       "🎲 룰렛 돌리기"
                     )}
