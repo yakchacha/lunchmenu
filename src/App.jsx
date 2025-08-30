@@ -950,7 +950,7 @@ const LunchRoulette = () => {
                           </span>
                           {restaurant.naverMapUrl && (
                             <div className="col-span-2 flex justify-center md:col-span-1">
-                              
+                              <a
                                 href={restaurant.naverMapUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
