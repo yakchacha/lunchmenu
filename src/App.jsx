@@ -521,7 +521,7 @@ const LunchRoulette = () => {
             OGQ 점심 룰렛
           </h1>
           <p className="text-gray-600">
-            점메추도 커피 내기도 OGQ와 함께 한큐에 끝내봅시다
+            점메추도 커피 내기도 OGQ와 함께 한큐에 끝내자
           </p>
           {!isOnline && (
             <div className="mt-2 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2 inline-block">
@@ -571,7 +571,7 @@ const LunchRoulette = () => {
             </div>
 
             <div className="flex justify-center mb-8">
-              <div className="border-t-3 border-gray-200 w-24"></div>
+              <div className="border-t-2 border-gray-200 w-24"></div>
             </div>
             
             {restaurants.length === 0 ? (
@@ -807,7 +807,7 @@ const LunchRoulette = () => {
                   <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-6 border-2 border-teal-200">
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-teal-700 mb-2">
-                        팀원들에게 커피를 사줄 기회를 얻은 행운의 당첨자는?
+                        오늘 커피 쏘시는 분은
                       </h3>
                       <div className="bg-white rounded-lg p-4 shadow-md">
                         <div className="flex flex-wrap justify-center gap-2">
@@ -821,7 +821,7 @@ const LunchRoulette = () => {
                           ))}
                         </div>
                         <p className="text-gray-600 mt-3">
-                          오늘의 주인공, 감사하십시오
+                          모두들 감사하십시오
                         </p>
                       </div>
                     </div>
