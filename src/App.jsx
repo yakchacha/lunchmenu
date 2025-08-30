@@ -611,7 +611,7 @@ const LunchRoulette = () => {
                             {selectedRestaurant.rating}
                           </span>
                             {selectedRestaurant.naverMapUrl && (
-  
+                              <a
                                 href={selectedRestaurant.naverMapUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
